@@ -113,9 +113,43 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader shader("shader.vs", "shader.fs");
+    Shader shader1("shader.vs", "shader.fs");
+    Shader shader2("shader.vs", "shader.fs");
+    Shader shader3("shader.vs", "shader.fs");
+    Shader shader4("shader.vs", "shader.fs");
+    Shader shader5("shader.vs", "shader.fs");
+    Shader shader6("shader.vs", "shader.fs");
+    Shader shader7("shader.vs", "shader.fs");
+    Shader shader8("shader.vs", "shader.fs");
+    Shader shader9("shader.vs", "shader.fs");
+    Shader shader0("shader.vs", "shader.fs");
 
-    GameObject gameObject(cube, sizeof(cube), &shader);
+
+    GameObject gameObjects[] = {
+        GameObject(cube, (int)sizeof(cube), &shader1),
+        GameObject(cube, (int)sizeof(cube), &shader2),
+        GameObject(cube, (int)sizeof(cube), &shader3),
+        GameObject(cube, (int)sizeof(cube), &shader4),
+        GameObject(cube, (int)sizeof(cube), &shader5),
+        GameObject(cube, (int)sizeof(cube), &shader6),
+        GameObject(cube, (int)sizeof(cube), &shader7),
+        GameObject(cube, (int)sizeof(cube), &shader8),
+        GameObject(cube, (int)sizeof(cube), &shader9),
+        GameObject(cube, (int)sizeof(cube), &shader0),
+    };
+
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f,  2.0f, -2.5f),
+        glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
 
     // load and create a texture
     // ==========================
@@ -147,18 +181,50 @@ int main()
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
-    shader.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader.SetInt("texture1", 1);
+    shader1.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader1.SetInt("texture1", 1);
+    shader2.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader2.SetInt("texture1", 1);
+    shader3.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader3.SetInt("texture1", 1);
+    shader4.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader4.SetInt("texture1", 1);
+    shader5.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader5.SetInt("texture1", 1);
+    shader6.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader6.SetInt("texture1", 1);
+    shader7.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader7.SetInt("texture1", 1);
+    shader8.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader8.SetInt("texture1", 1);
+    shader9.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader9.SetInt("texture1", 1);
+    shader0.Use(); // don't forget to activate/use the shader before setting uniforms!
+    shader0.SetInt("texture1", 1);
 
 
     GameObject::View = glm::translate(GameObject::View, glm::vec3(0.0f, 0.0f, -3.0f));
 
-    GameObject::Projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    GameObject::Projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+    float deltaTime = 0.0f;
+    float lastFrameTime = 0.0f;
+
+    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+    glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrameTime = glfwGetTime();
+        deltaTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
+
         // input
         // -----
         processInput(window);
@@ -171,9 +237,20 @@ int main()
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
- 
-        gameObject.Rotate((float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-        gameObject.Draw();
+
+
+        const float radius = 10.0f;
+        float camX = sin(glfwGetTime()) * radius;
+        float camZ = cos(glfwGetTime()) * radius;
+        GameObject::View = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+        for (int i = 0; i < (sizeof(gameObjects) / sizeof(*gameObjects)); i++)
+        {
+            gameObjects[i].Translate(cubePositions[i]);
+   
+            gameObjects[i].Draw();
+        }
+        GameObject::View = glm::mat4(1.0f);
+
         // glBindVertexArray(0); // no need to unbind it every time 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -184,7 +261,16 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    shader.Delete();
+    shader1.Delete();
+    shader2.Delete();
+    shader3.Delete();
+    shader4.Delete();
+    shader5.Delete();
+    shader6.Delete();
+    shader7.Delete();
+    shader8.Delete();
+    shader9.Delete();
+    shader0.Delete();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------

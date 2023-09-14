@@ -44,6 +44,9 @@ void GameObject::Draw()
 
     glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // Reset Model View
+    m_Model = glm::mat4(1.0f);
 }
 
 void GameObject::Rotate(float rotation, glm::vec3 axis)

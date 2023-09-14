@@ -22,6 +22,7 @@ public:
     static glm::mat4 Projection;
     static glm::mat4 View;
     GameObject(float vertices[], int verticesSize, Shader* shader);
+    GameObject() {};
     ~GameObject();
     void Draw();
     void Rotate(float rotation, glm::vec3 axis);
