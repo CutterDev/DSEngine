@@ -1,7 +1,8 @@
 #include "gameobject.h"
 
-void GameObject::Initialize(float vertices[], int verticesSize)
+GameObject::GameObject(float vertices[], int verticesSize, Shader* shader)
 {
+    m_Shader = shader;
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);
 
@@ -26,26 +27,36 @@ void GameObject::Initialize(float vertices[], int verticesSize)
     // Transformation matrix
     //
     // Local Space
-    Model = glm::mat4(1.0f);
-    Model = glm::rotate(Model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-    //
-    // View
-    View = glm::mat4(1.0f);
-    // note that we're translating the scene in the reverse direction of where we want to move
-    View = glm::translate(View, glm::vec3(0.0f, 0.0f, -3.0f));
-
-    Projection;
-    Projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    m_Model = glm::mat4(1.0f);
 }
 
 void GameObject::Draw()
 {
+    m_Shader->Use();
+    int modelLoc = glGetUniformLocation(m_Shader->ID, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(m_Model));
+
+    int viewLoc = glGetUniformLocation(m_Shader->ID, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(View));
+
+    int projLoc = glGetUniformLocation(m_Shader->ID, "projection");
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(Projection));
+
     glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void GameObject::Delete()
+void GameObject::Rotate(float rotation, glm::vec3 axis)
+{
+    m_Model = glm::rotate(m_Model, glm::radians(rotation), axis);
+}
+
+void GameObject::Translate(glm::vec3 pos)
+{
+    m_Model = glm::translate(m_Model, pos);
+}
+
+GameObject::~GameObject()
 {
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);
