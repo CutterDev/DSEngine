@@ -155,10 +155,17 @@ int main()
 
     GameObject::Projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
+    float delta_time = 0.0f;
+    float last_frame = 0.0f;
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        float current_frame = glfwGetTime();
+        delta_time = current_frame - last_frame;
+        last_frame = current_frame;
+
         // input
         // -----
         processInput(window);
@@ -172,7 +179,7 @@ int main()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
  
-        gameObject.Rotate((float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        gameObject.Rotate(delta_time * 100, glm::vec3(0.5f, 1.0f, 0.0f));
         gameObject.Draw();
         // glBindVertexArray(0); // no need to unbind it every time 
 
