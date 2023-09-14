@@ -75,6 +75,9 @@ float cube[] = {
 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
+glm::mat4 GameObject::View = glm::mat4(1.0f);
+glm::mat4 GameObject::Projection = glm::mat4(1.0f);
+
 int main()
 {
     // glfw: initialize and configure
@@ -147,11 +150,10 @@ int main()
     shader.Use(); // don't forget to activate/use the shader before setting uniforms!
     shader.SetInt("texture1", 1);
 
-    View = glm::mat4(1.0);
-    View = glm::translate(View, glm::vec3(0.0f, 0.0f, -3.0f));
 
-    Projection = glm::mat4(1.0);
-    Projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    GameObject::View = glm::translate(GameObject::View, glm::vec3(0.0f, 0.0f, -3.0f));
+
+    GameObject::Projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
     // render loop
     // -----------
@@ -166,13 +168,11 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-
-        gameObject.Rotate((float)glfwGetTime() * glm::radians(5.0f), glm::vec3(0.5f, 1.0f, 0.0f));
  
+        gameObject.Rotate((float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         gameObject.Draw();
         // glBindVertexArray(0); // no need to unbind it every time 
 

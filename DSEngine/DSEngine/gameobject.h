@@ -8,8 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-static glm::mat4 Projection;
-static glm::mat4 View;
+
 
 class GameObject 
 {
@@ -20,8 +19,8 @@ private:
     glm::mat4 m_Model;
     Shader* m_Shader;
 public:
-
-
+    static glm::mat4 Projection;
+    static glm::mat4 View;
     GameObject(float vertices[], int verticesSize, Shader* shader);
     ~GameObject();
     void Draw();
