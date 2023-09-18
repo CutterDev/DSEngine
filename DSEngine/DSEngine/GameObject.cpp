@@ -30,17 +30,17 @@ GameObject::GameObject(float vertices[], int verticesSize, Shader* shader)
     m_Model = glm::mat4(1.0f);
 }
 
-void GameObject::Draw()
+void GameObject::Draw(GameCamera camera)
 {
     m_Shader->Use();
     int modelLoc = glGetUniformLocation(m_Shader->ID, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(m_Model));
 
     int viewLoc = glGetUniformLocation(m_Shader->ID, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(View));
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.View));
 
     int projLoc = glGetUniformLocation(m_Shader->ID, "projection");
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(Projection));
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.Projection));
 
     glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);

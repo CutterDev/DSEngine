@@ -1,5 +1,6 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
+
 #include "Shader.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -7,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include "GameCamera.h"
 
 
 class GameObject 
@@ -19,12 +20,11 @@ private:
     glm::mat4 m_Model;
     Shader* m_Shader;
 public:
-    static glm::mat4 Projection;
-    static glm::mat4 View;
+
     GameObject(float vertices[], int verticesSize, Shader* shader);
     GameObject() {};
     ~GameObject();
-    void Draw();
+    void Draw(GameCamera camera);
     void Rotate(float rotation, glm::vec3 axis);
     void Translate(glm::vec3 axis);
     void Translate(float x, float y, float z);
