@@ -217,6 +217,9 @@ int main()
     glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
     glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
 
+    float delta_time = 0.0f;
+    float last_frame = 0.0f;
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
