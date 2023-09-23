@@ -10,6 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include "BasicCubeNode.h"
 
 GameCamera Camera;
 
@@ -20,63 +22,6 @@ void processInput(GLFWwindow* window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-float vertices[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
-};
-unsigned int indices[] = {
-    0, 1, 3, // first triangle
-    1, 2, 3  // second triangle
-};
-
-float cube[] = {
--0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
- 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
--0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
- 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
--0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
--0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
--0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
--0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
--0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
--0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
--0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
- 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
--0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
--0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
-
 
 float deltaTime = 0.0f;
 
@@ -119,99 +64,48 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader shader1("shader.vs", "shader.fs");
-    Shader shader2("shader.vs", "shader.fs");
-    Shader shader3("shader.vs", "shader.fs");
-    Shader shader4("shader.vs", "shader.fs");
-    Shader shader5("shader.vs", "shader.fs");
-    Shader shader6("shader.vs", "shader.fs");
-    Shader shader7("shader.vs", "shader.fs");
-    Shader shader8("shader.vs", "shader.fs");
-    Shader shader9("shader.vs", "shader.fs");
-    Shader shader0("shader.vs", "shader.fs");
-
-
-    GameObject gameObjects[] = {
-        GameObject(cube, (int)sizeof(cube), &shader1),
-        GameObject(cube, (int)sizeof(cube), &shader2),
-        GameObject(cube, (int)sizeof(cube), &shader3),
-        GameObject(cube, (int)sizeof(cube), &shader4),
-        GameObject(cube, (int)sizeof(cube), &shader5),
-        GameObject(cube, (int)sizeof(cube), &shader6),
-        GameObject(cube, (int)sizeof(cube), &shader7),
-        GameObject(cube, (int)sizeof(cube), &shader8),
-        GameObject(cube, (int)sizeof(cube), &shader9),
-        GameObject(cube, (int)sizeof(cube), &shader0),
-    };
-
-    glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f,  0.0f,  0.0f),
-        glm::vec3(2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),
-        glm::vec3(1.5f,  2.0f, -2.5f),
-        glm::vec3(1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
-
-    // load and create a texture
-    // ==========================
-    unsigned int texture1;
-
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char* data = stbi_load("wall.jpg", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-
-    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-    // -------------------------------------------------------------------------------------------
-    shader1.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader1.SetInt("texture1", 1);
-    shader2.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader2.SetInt("texture1", 1);
-    shader3.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader3.SetInt("texture1", 1);
-    shader4.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader4.SetInt("texture1", 1);
-    shader5.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader5.SetInt("texture1", 1);
-    shader6.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader6.SetInt("texture1", 1);
-    shader7.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader7.SetInt("texture1", 1);
-    shader8.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader8.SetInt("texture1", 1);
-    shader9.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader9.SetInt("texture1", 1);
-    shader0.Use(); // don't forget to activate/use the shader before setting uniforms!
-    shader0.SetInt("texture1", 1);
-
+    Shader cubeShader("shader.vs", "shader.fs");
+    Shader floorShader("shader.vs", "shader.fs");
+    Shader lightShader("shader.vs", "lightsource.fs");
 
     Camera.TranslateView(glm::vec3(0.0f, 0.0f, -3.0f));
     Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f));
     float lastFrameTime = 0.0f;
+
+    BasicCubeNode lightNode = BasicCubeNode();
+    lightNode.m_Shader = &lightShader;
+
+    GameObject lightCube;
+    lightCube.AddNode(&lightNode);
+    lightCube.Translate(-2.0f, 2.0f, -6.0f);
+
+    GameObject basicCube;
+
+    basicCube.Translate(0.0f, 2.0f, -5.0f);
+
+    // Todo: Try to find a way so the Vertex Arrays aren't repeated for the same vertices for the same type of node.
+    BasicCubeNode node = BasicCubeNode();
+
+    node.m_Shader = &cubeShader;
+
+    basicCube.AddNode(&node);
+
+    GameObject basicCube2;
+    basicCube.Rotate(45.0f, glm::vec3(10.0f, 0.0f, 0.0f));
+    basicCube2.Translate(0.0f, 0.0f, -5.0f);
+    basicCube2.AddNode(&node);
+    basicCube2.Parent = &basicCube;
+
+
+
+    GameObject floor;
+    floor.Scale(glm::vec3(100.0f, 1.0f, 100.0f));
+    floor.Translate(0.0, -2.0f, 0.0f);
+    floor.AddNode(&node);
+
+
+    GameObject pivotPoint;
+    lightCube.Parent = &pivotPoint;
 
     // render loop
     // -----------
@@ -220,6 +114,11 @@ int main()
         float currentFrameTime = glfwGetTime();
         deltaTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
+
+        cubeShader.Use();
+        cubeShader.SetVec3("objectColor", 0.1f, 0.4f, 1.0f);
+        cubeShader.SetVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        cubeShader.SetVec3("lightPos", lightCube.Position());
 
         // input
         // -----
@@ -230,18 +129,22 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // bind textures on corresponding texture units
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        cubeShader.Use();
+        cubeShader.SetVec3("objectColor", 0.1f, 0.4f, 1.0f);
+        cubeShader.SetVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        cubeShader.SetVec3("lightPos", lightCube.Position());
+        cubeShader.SetVec3("viewPos", Camera.Position);
 
         Camera.Update();
-        for (int i = 0; i < (sizeof(gameObjects) / sizeof(*gameObjects)); i++)
-        {
-            gameObjects[i].Translate(cubePositions[i]);
-   
-            gameObjects[i].Draw(Camera);
-        }
+        glBindVertexArray(node.m_VAO);
+        basicCube.Update(&Camera);
+        basicCube2.Update(&Camera);
+        lightCube.Update(&Camera);
 
+
+        floor.Update(&Camera);
+
+        //pivotPoint.Rotate(20.0f * deltaTime, glm::vec3(45.0f, 45.0f, 0.0f));
 
         // glBindVertexArray(0); // no need to unbind it every time 
 
@@ -253,16 +156,8 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    shader1.Delete();
-    shader2.Delete();
-    shader3.Delete();
-    shader4.Delete();
-    shader5.Delete();
-    shader6.Delete();
-    shader7.Delete();
-    shader8.Delete();
-    shader9.Delete();
-    shader0.Delete();
+    cubeShader.Delete();
+    lightShader.Delete();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------

@@ -134,7 +134,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\..\GL\GLAD\src\glad.c" />
+    <ClCompile Include="BasicCubeNode.cpp" />
     <ClCompile Include="GameCamera.cpp" />
+    <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -142,13 +144,16 @@
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicCubeNode.h" />
     <ClInclude Include="GameCamera.h" />
-    <ClInclude Include="gameobject.h" />
+    <ClInclude Include="GameNode.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="lightsource.fs" />
     <None Include="shader.fs">
       <DeploymentContent>true</DeploymentContent>
     </None>
