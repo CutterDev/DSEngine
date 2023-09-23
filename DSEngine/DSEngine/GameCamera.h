@@ -11,7 +11,6 @@ class GameCamera
 private:
     bool m_FirstMouse = false;
     float m_CameraSpeed = 50.0f;
-    glm::vec3 m_CameraPos;;
     glm::vec3 m_CameraFront;
     glm::vec3 m_CameraUp;
     float m_Yaw = -90.0f;
@@ -20,6 +19,7 @@ private:
     float m_LastY = 600.0 / 2.0;
     float m_Fov = 45.0f;
 public:
+    glm::vec3 Position;
     glm::mat4 Projection;
     glm::mat4 View;
 
@@ -27,7 +27,7 @@ public:
     { 
         Projection = glm::mat4(1.0f); 
         View = glm::mat4(1.0f); 
-        m_CameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        Position = glm::vec3(0.0f, 0.0f, 3.0f);
         m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
@@ -44,20 +44,20 @@ public:
     
     void Update()
     {
-        View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
+        View = glm::lookAt(Position, Position + m_CameraFront, m_CameraUp);
     }
 
     void MovementUpdate(GLFWwindow* window, float deltaTime)
     {
         float speed = deltaTime * m_CameraSpeed;
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            m_CameraPos += speed * m_CameraFront;
+            Position += speed * m_CameraFront;
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            m_CameraPos -= speed * m_CameraFront;
+            Position -= speed * m_CameraFront;
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            m_CameraPos -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * speed;
+            Position -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * speed;
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            m_CameraPos += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * speed;
+            Position += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * speed;
     }
 
     void UpdateMouse(GLFWwindow* window, double xposIn, double yposIn)
