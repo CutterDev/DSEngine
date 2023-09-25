@@ -135,19 +135,27 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\..\GL\GLAD\src\glad.c" />
     <ClCompile Include="BasicCubeNode.cpp" />
+    <ClCompile Include="DefaultCube.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MeshFilter.cpp" />
+    <ClCompile Include="MeshNode.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="std_image.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicCubeNode.h" />
+    <ClInclude Include="DefaultCube.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameNode.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="MeshFilter.h" />
+    <ClInclude Include="MeshNode.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Triangle.h" />

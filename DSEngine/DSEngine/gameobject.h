@@ -15,6 +15,9 @@
 class GameObject 
 {
 private:
+    /// <summary>
+    /// Game nodes Attached to the GameObject
+    /// </summary>
     std::vector<GameNode*> GameNodes;
 public:
     glm::mat4 Transform;

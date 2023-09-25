@@ -4,7 +4,7 @@ void GameObject::Update(GameCamera* camera)
 {
     for (auto &node : GameNodes)
     {
-        node->Update(camera, this);
+        node->Update(camera);
     }
 }
 
@@ -58,6 +58,7 @@ glm::vec3 GameObject::Position()
 
 void GameObject::AddNode(GameNode* gameNode)
 {
+    gameNode->GameObject = this;
     GameNodes.push_back(gameNode);
 }
 

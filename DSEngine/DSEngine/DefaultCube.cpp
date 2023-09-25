@@ -1,7 +1,5 @@
-#include "BasicCubeNode.h"
-#include "GameObject.h"
-
-BasicCubeNode::BasicCubeNode() : GameNode()
+#include "DefaultCube.h"
+DefaultCube::DefaultCube()
 {
     float cube[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -70,21 +68,14 @@ BasicCubeNode::BasicCubeNode() : GameNode()
     glBindVertexArray(0);
 }
 
-void BasicCubeNode::Update(GameCamera* camera)
+void DefaultCube::Draw()
 {
-    if (m_Shader != NULL)
-    {
-        m_Shader->Use();
-
-        m_Shader->SetMat4("model", GameObject->GetTransform());
-        m_Shader->SetMat4("view", camera->View);
-        m_Shader->SetMat4("projection", camera->Projection);
-    }
+    glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
 
-BasicCubeNode::~BasicCubeNode()
+DefaultCube::~DefaultCube()
 {
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);

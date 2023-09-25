@@ -13,6 +13,6 @@ public:
 
     BasicCubeNode();
     ~BasicCubeNode();
-    void Update(GameCamera* camera, GameObject* gameObject);
+    void Update(GameCamera* camera);
 };
 

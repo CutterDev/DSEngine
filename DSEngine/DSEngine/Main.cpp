@@ -12,6 +12,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "BasicCubeNode.h"
+#include "DefaultCube.h"
+#include "MeshFilter.h"
+#include "MeshNode.h"
 
 GameCamera Camera;
 
@@ -53,6 +56,7 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSwapInterval(0);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -68,8 +72,11 @@ int main()
     Shader floorShader("shader.vs", "shader.fs");
     Shader lightShader("shader.vs", "lightsource.fs");
 
+    Material material;
+    material.Shader = &cubeShader;
+
     Camera.TranslateView(glm::vec3(0.0f, 0.0f, -3.0f));
-    Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f));
+    Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f));
     float lastFrameTime = 0.0f;
 
     BasicCubeNode lightNode = BasicCubeNode();
@@ -84,16 +91,24 @@ int main()
     basicCube.Translate(0.0f, 2.0f, -5.0f);
 
     // Todo: Try to find a way so the Vertex Arrays aren't repeated for the same vertices for the same type of node.
-    BasicCubeNode node = BasicCubeNode();
+    DefaultCube cube;
 
-    node.m_Shader = &cubeShader;
+    MeshNode mesh1;
+    mesh1.MeshFilter = &cube;
+    mesh1.Material = &material;
+    MeshNode mesh2;
+    mesh2.MeshFilter = &cube;
+    mesh2.Material = &material;
+    MeshNode mesh3;
+    mesh3.MeshFilter = &cube;
+    mesh3.Material = &material;
 
-    basicCube.AddNode(&node);
+    basicCube.AddNode(&mesh1);
 
     GameObject basicCube2;
     basicCube.Rotate(45.0f, glm::vec3(10.0f, 0.0f, 0.0f));
     basicCube2.Translate(0.0f, 0.0f, -5.0f);
-    basicCube2.AddNode(&node);
+    basicCube2.AddNode(&mesh2);
     basicCube2.Parent = &basicCube;
 
 
@@ -101,7 +116,7 @@ int main()
     GameObject floor;
     floor.Scale(glm::vec3(100.0f, 1.0f, 100.0f));
     floor.Translate(0.0, -2.0f, 0.0f);
-    floor.AddNode(&node);
+    floor.AddNode(&mesh3);
 
 
     GameObject pivotPoint;
@@ -111,14 +126,16 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrameTime = glfwGetTime();
+        float currentFrameTime = static_cast<float>(glfwGetTime());
         deltaTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
 
         cubeShader.Use();
-        cubeShader.SetVec3("objectColor", 0.1f, 0.4f, 1.0f);
-        cubeShader.SetVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        cubeShader.SetVec3("lightPos", lightCube.Position());
+        cubeShader.SetVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        cubeShader.SetVec3("light.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
+        cubeShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        cubeShader.SetVec3("light.position", lightCube.Position());
+        cubeShader.SetVec3("viewPos", Camera.Position);
 
         // input
         // -----
@@ -130,13 +147,13 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         cubeShader.Use();
-        cubeShader.SetVec3("objectColor", 0.1f, 0.4f, 1.0f);
-        cubeShader.SetVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        cubeShader.SetVec3("lightPos", lightCube.Position());
+        cubeShader.SetVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        cubeShader.SetVec3("light.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
+        cubeShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        cubeShader.SetVec3("light.position", lightCube.Position());
         cubeShader.SetVec3("viewPos", Camera.Position);
 
-        Camera.Update();
-        glBindVertexArray(node.m_VAO);
+
         basicCube.Update(&Camera);
         basicCube2.Update(&Camera);
         lightCube.Update(&Camera);
@@ -147,7 +164,8 @@ int main()
         //pivotPoint.Rotate(20.0f * deltaTime, glm::vec3(45.0f, 45.0f, 0.0f));
 
         // glBindVertexArray(0); // no need to unbind it every time 
-
+        
+        Camera.Update(deltaTime);
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
@@ -172,7 +190,7 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    Camera.MovementUpdate(window, deltaTime);
+    Camera.MovementUpdate(window);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
