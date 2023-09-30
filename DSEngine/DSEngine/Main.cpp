@@ -15,6 +15,7 @@
 #include "DefaultCube.h"
 #include "MeshFilter.h"
 #include "MeshNode.h"
+//#include "ModelImporter.h"
 
 GameCamera Camera;
 
@@ -74,18 +75,18 @@ int main()
 
     Material material;
     material.Shader = &cubeShader;
+    material.Shininess = 32.0f;
+    material.Ambient = glm::vec3(0.31f, 0.5f, 1.0f);
+    material.Diffuse = glm::vec3(0.31f, 0.5f, 1.0f);
+    material.Specular = glm::vec3(0.5f, 0.5f, 0.5f);
 
     Camera.TranslateView(glm::vec3(0.0f, 0.0f, -3.0f));
     Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f));
     float lastFrameTime = 0.0f;
 
-    BasicCubeNode lightNode = BasicCubeNode();
-    lightNode.m_Shader = &lightShader;
+
 
     GameObject lightCube;
-    lightCube.AddNode(&lightNode);
-    lightCube.Translate(-2.0f, 2.0f, -6.0f);
-
     GameObject basicCube;
 
     basicCube.Translate(0.0f, 2.0f, -5.0f);
@@ -102,6 +103,8 @@ int main()
     MeshNode mesh3;
     mesh3.MeshFilter = &cube;
     mesh3.Material = &material;
+
+    lightCube.Translate(-2.0f, 2.0f, -6.0f);
 
     basicCube.AddNode(&mesh1);
 
@@ -122,6 +125,10 @@ int main()
     GameObject pivotPoint;
     lightCube.Parent = &pivotPoint;
 
+    //ModelImporter model;
+
+    //model.Import();
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -133,7 +140,7 @@ int main()
         cubeShader.Use();
         cubeShader.SetVec3("light.ambient", 0.2f, 0.2f, 0.2f);
         cubeShader.SetVec3("light.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
-        cubeShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        cubeShader.SetVec3("light.specular", 0.1f, 0.1f, 0.1f);
         cubeShader.SetVec3("light.position", lightCube.Position());
         cubeShader.SetVec3("viewPos", Camera.Position);
 

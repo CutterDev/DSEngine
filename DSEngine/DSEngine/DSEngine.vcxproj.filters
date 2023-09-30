@@ -60,6 +60,9 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ModelImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -95,6 +98,9 @@
     <ClInclude Include="Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ModelImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vs">
@@ -104,6 +110,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="lightsource.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Lightsource.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
