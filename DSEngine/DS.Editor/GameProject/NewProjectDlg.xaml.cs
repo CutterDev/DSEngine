@@ -56,7 +56,7 @@ namespace DS.Editor.GameProject
             {
                 if (!string.IsNullOrWhiteSpace(errorMsg))
                 {
-                    MessageBox.Show(errorMsg);
+                    MessageBox.Show(errorMsg, "Error");
                 }
             }
         }

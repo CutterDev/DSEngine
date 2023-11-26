@@ -1,4 +1,5 @@
 ﻿using DS.Editor.GameProject;
+using DS.Editor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace DS.Editor
     /// </summary>
     public partial class MainWindow : Window
     {
+        Project OpenProject { get; set; }
         public MainWindow()
         {
             InitializeComponent();

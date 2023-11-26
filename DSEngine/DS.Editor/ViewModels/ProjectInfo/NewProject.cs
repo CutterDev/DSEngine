@@ -60,16 +60,14 @@ namespace DS.Editor.ViewModels
                 errMessage = "File path cannot be Empty";
             }
 
-            // If Directory exists just invalidate it to not cause any problems.
-            if (Directory.Exists(_filepath))
-            {
-                result = true;
-                errMessage = "Project Path Already Exists";
-            }
-
             try
             {
-                Directory.CreateDirectory(_filepath);
+                // If Directory exists just invalidate it to not cause any problems.
+                if (Directory.Exists(_filepath))
+                {
+                    result = false;
+                    errMessage = "Project Path Already Exists";
+                }
             }
             catch(Exception e)
             {
