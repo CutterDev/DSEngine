@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DS.Editor.Util;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -12,11 +13,12 @@ namespace DS.Editor.ViewModels;
 [DataContract(Name = "Game")]
 public class Project : BaseViewModel
 {
-    private string extension = ".dsproject";
-
     [DataMember]
     public string Name { get; private set; }
 
+    /// <summary>
+    /// Base Path to the Project File.
+    /// </summary>
     [DataMember]
     public string BasePath { get; private set; }
 
@@ -28,7 +30,7 @@ public class Project : BaseViewModel
     public Project(string name, string path)
     {
         Name = name;
-        BasePath = Path.Combine(path, $"{Name}{extension}");
+        BasePath = Path.Combine(path, $"{Name}{ProgramConstants.ProjectExtension}");
         _scenes.Add(new Scene(this, "DemoScene"));
     }
 }

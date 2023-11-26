@@ -9,7 +9,7 @@ namespace DS.Editor.ViewModels
 {
     public class NewProject : BaseViewModel
     {
-        private string _name = "New Project";
+        private string _name = "Project1";
         private string _filepath;
 
         public NewProject()

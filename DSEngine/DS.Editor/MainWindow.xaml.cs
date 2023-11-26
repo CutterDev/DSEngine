@@ -1,4 +1,5 @@
 ﻿using DS.Editor.GameProject;
+using DS.Editor.Util;
 using DS.Editor.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,17 @@ namespace DS.Editor
 
             if (projectBrowser.ShowDialog().Value)
             {
-                // 
+                OpenProject openProject = projectBrowser.DataContext as OpenProject;
+
+                string errMsg = string.Empty;
+                if (openProject != null && ProjectFileHelper.IsValidProjectFile(openProject.SelectedProjectPath, out errMsg))
+                {
+
+                }
+                else
+                {
+                    WpfHelper.ShowError(errMsg);
+                }
             }
             else
             {

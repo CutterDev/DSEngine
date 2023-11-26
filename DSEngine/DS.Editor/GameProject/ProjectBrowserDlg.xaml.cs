@@ -22,10 +22,59 @@ namespace DS.Editor.GameProject
     /// </summary>
     public partial class ProjectBrowserDlg : Window
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ProjectBrowserDlg()
         {
             InitializeComponent();
-            this.Owner = App.Current.MainWindow;
+
+            Initialize();
+        }
+
+        /// <summary>
+        /// Get the default Directory that has the existing Projects. 
+        /// </summary>
+        // TODO Add a file that holds all recently open Projects aswell.
+        private void Initialize()
+        {
+            OpenProject dataCtx = this.DataContext as OpenProject;
+
+            try
+            {
+                if (Directory.Exists(ProgramConstants.ProjectsDirectory))
+                {
+                    // Potential Project directories need to check for project file
+                    string[] projDirs = Directory.GetDirectories(ProgramConstants.ProjectsDirectory);
+
+                    for (int i = 0; i < projDirs.Length; i++)
+                    {
+                        string proj = projDirs[i];
+                        string[] projFiles = Directory.GetFiles(proj);
+
+                        for (int x = 0; x < projFiles.Length; x++)
+                        {
+                            string file = projFiles[x];
+
+                            if (file.EndsWith(ProgramConstants.ProjectExtension))
+                            {
+                                if (SerializeHelper.TryDeserializeFromFile<Project>(file, out Project project, out string errMsg))
+                                {
+                                    dataCtx.ExistingProjects.Add(project);
+                                }
+                                else
+                                {
+                                    WpfHelper.ShowError(errMsg);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                WpfHelper.ShowError($"Error loading Existing Projects {e.Message}");
+            }
         }
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
@@ -42,7 +91,29 @@ namespace DS.Editor.GameProject
                 if (newProjectDlg.GetModel(out NewProject project))
                 {
                     CreateProject(project);
+
+
                 }
+            }
+        }
+
+        /// <summary>
+        /// Check if the given <paramref name="filePath"/> exists then close the dialog if it does.
+        /// </summary>
+        private void OpenProject(string filePath)
+        {
+            OpenProject dataCtx = this.DataContext as OpenProject;
+
+            if (File.Exists(filePath))
+            {
+                dataCtx.SelectedProjectPath = filePath;
+
+                DialogResult = true;
+                this.Close();
+            }
+            else
+            {
+                WpfHelper.ShowError("Project does not exist.");
             }
         }
 
@@ -63,21 +134,18 @@ namespace DS.Editor.GameProject
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                WpfHelper.ShowError($"Error Creating Project {ex.Message}");
             }
 
             Project newProject = new Project(project.Name, project.FilePath);
 
             if (SerializeHelper.TrySerializeToFile<Project>(newProject, newProject.BasePath, out string errmsg))
             {
-
+                OpenProject(newProject.BasePath);
             }
             else
             {
-                if (!string.IsNullOrWhiteSpace(errmsg))
-                {
-                    MessageBox.Show(errmsg, "Error");
-                }
+                WpfHelper.ShowError(errmsg);
             }
         }
     }

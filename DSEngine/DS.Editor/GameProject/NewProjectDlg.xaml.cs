@@ -1,4 +1,5 @@
-﻿using DS.Editor.ViewModels;
+﻿using DS.Editor.Util;
+using DS.Editor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,10 +55,7 @@ namespace DS.Editor.GameProject
             }
             else
             {
-                if (!string.IsNullOrWhiteSpace(errorMsg))
-                {
-                    MessageBox.Show(errorMsg, "Error");
-                }
+                WpfHelper.ShowError(errorMsg);
             }
         }
 

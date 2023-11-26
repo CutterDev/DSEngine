@@ -4,8 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DS.Editor.GameProject"
+        xmlns:model="clr-namespace:DS.Editor.ViewModels"
+        d:DataContext="{d:DesignInstance Type=model:OpenProject, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         Title="ProjectBrowserDlg" Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <model:OpenProject/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
@@ -29,7 +34,13 @@
             <TextBlock Grid.Row="0" Margin="10 5" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20">Existing Projects</TextBlock>
 
             <!-- Project List -->
-            <ListBox Name="lbProjects" Grid.Row="1" Margin="10 5" Height="auto"/>
+            <ListBox Name="lbProjects" Grid.Row="1" Margin="10 5" ItemsSource="{Binding ExistingProjects}" Height="auto">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
 
 
@@ -38,7 +49,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="150px"/>
             </Grid.ColumnDefinitions>
-            <TextBox Name="tbOpenProject" Text="Hello" Grid.Column="0"/>
+            <TextBox Name="tbOpenProject" Text="{Binding SelectedProjectPath}" Grid.Column="0"/>
             <Button x:Name="btnOpenProject" Content="Open Project" Grid.Column="1" Margin="5 0" Click="OpenProject_Click"/>
         </Grid>
     </Grid>
