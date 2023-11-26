@@ -33,6 +33,7 @@ namespace DS.Editor
 
         private void OpenBrowserDialog()
         {
+            string test;
             ProjectBrowserDlg projectBrowser = new ProjectBrowserDlg();
 
             if (projectBrowser.ShowDialog().Value)
