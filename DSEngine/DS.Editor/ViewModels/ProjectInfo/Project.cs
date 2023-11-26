@@ -29,5 +29,6 @@ public class Project : BaseViewModel
     {
         Name = name;
         BasePath = Path.Combine(path, $"{Name}{extension}");
+        _scenes.Add(new Scene(this, "DemoScene"));
     }
 }
