@@ -1,2 +1,2 @@
 # DSEngine
-Game Engine created with OpenGL in C++
+Game Engine created using WPF as for the UI and Tools. OpenGL is used as the API for the graphics.
