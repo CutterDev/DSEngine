@@ -34,7 +34,7 @@
             <TextBlock Grid.Row="0" Margin="10 5" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20">Existing Projects</TextBlock>
 
             <!-- Project List -->
-            <ListBox Name="lbProjects" Grid.Row="1" Margin="10 5" ItemsSource="{Binding ExistingProjects}" Height="auto">
+            <ListBox Name="lbProjects" Grid.Row="1" Margin="10 5" ItemsSource="{Binding ExistingProjects}" SelectionChanged="ExistingProject_SelectionChanged" Height="auto">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"/>

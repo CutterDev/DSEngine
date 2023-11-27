@@ -45,9 +45,14 @@ namespace DS.Editor
                 string errMsg = string.Empty;
                 if (openProject != null && ProjectFileHelper.IsValidProjectFile(openProject.SelectedProjectPath, out errMsg))
                 {
-
+                    Project project;
+                    if (SerializeHelper.TryDeserializeFromFile(openProject.SelectedProjectPath, out project, out errMsg))
+                    {
+                        OpenProject = project;
+                    }
                 }
-                else
+                
+                if (!string.IsNullOrWhiteSpace(errMsg))
                 {
                     WpfHelper.ShowError(errMsg);
                 }

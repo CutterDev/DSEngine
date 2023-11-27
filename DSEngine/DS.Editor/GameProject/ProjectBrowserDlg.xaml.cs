@@ -1,19 +1,9 @@
 ﻿using DS.Editor.Util;
 using DS.Editor.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DS.Editor.GameProject
 {
@@ -77,9 +67,27 @@ namespace DS.Editor.GameProject
             }
         }
 
+        /// <summary>
+        /// Selected Changed Event when a different List item (Existing project) is selected.
+        /// </summary>
+        private void ExistingProject_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbProjects.SelectedItem != null)
+            {
+                Project selectedProject = lbProjects.SelectedItem as Project;
+
+                if (selectedProject != null)
+                {
+                    OpenProject dataCtx = this.DataContext as OpenProject;
+
+                    dataCtx.SelectedProjectPath = selectedProject.BasePath;
+                }
+            }
+        }
+
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
-
+            OpenProject();
         }
 
         private void NewProject_Click(object sender, RoutedEventArgs e)
@@ -100,14 +108,12 @@ namespace DS.Editor.GameProject
         /// <summary>
         /// Check if the given <paramref name="filePath"/> exists then close the dialog if it does.
         /// </summary>
-        private void OpenProject(string filePath)
+        private void OpenProject()
         {
             OpenProject dataCtx = this.DataContext as OpenProject;
 
-            if (File.Exists(filePath))
+            if (File.Exists(dataCtx.SelectedProjectPath))
             {
-                dataCtx.SelectedProjectPath = filePath;
-
                 DialogResult = true;
                 this.Close();
             }
@@ -117,6 +123,9 @@ namespace DS.Editor.GameProject
             }
         }
 
+        /// <summary>
+        /// Create a new Project file and the directory
+        /// </summary>
         private void CreateProject(NewProject project)
         {
             try
@@ -141,7 +150,7 @@ namespace DS.Editor.GameProject
 
             if (SerializeHelper.TrySerializeToFile<Project>(newProject, newProject.BasePath, out string errmsg))
             {
-                OpenProject(newProject.BasePath);
+                OpenProject();
             }
             else
             {

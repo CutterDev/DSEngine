@@ -43,6 +43,12 @@ namespace DS.Editor.GameProject
             return result;
         }
 
+        #region UI Events
+        /// <summary>
+        /// Will Validate the Project in the New Project
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
             NewProject project = this.DataContext as NewProject;
@@ -64,5 +70,8 @@ namespace DS.Editor.GameProject
             this.DialogResult = false;
             this.Close();
         }
+
+        #endregion
+
     }
 }
