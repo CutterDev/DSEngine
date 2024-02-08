@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -135,6 +135,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\..\GL\GLAD\src\glad.c" />
     <ClCompile Include="BasicCubeNode.cpp" />
+    <ClCompile Include="DSEngine.cpp" />
+    <ClCompile Include="DSRenderer.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -145,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicCubeNode.h" />
+    <ClInclude Include="DSCore.h" />
+    <ClInclude Include="DSEngine.h" />
+    <ClInclude Include="DSRenderer.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameNode.h" />
     <ClInclude Include="GameObject.h" />
