@@ -19,6 +19,18 @@
     <Filter Include="Source Files\Modules">
       <UniqueIdentifier>{0e016f2e-eb1e-416e-81c1-be15684be0ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{3938a22c-25ba-4053-b061-d8fcf08e01c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{3faa29f1-48ec-41b1-9555-475d0cec4697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{22e7682a-3e87-4680-968d-31899bda6295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{d9276e4f-9e8f-4b4c-97a7-feb464d732ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -54,6 +66,15 @@
     <ClCompile Include="DSRenderer.cpp">
       <Filter>Source Files\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>Source Files\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="IComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -86,12 +107,21 @@
     <ClInclude Include="DSRenderer.h">
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Header Files\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="IComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.vs">
+    <None Include="litshader.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="shader.fs">
+    <None Include="litshader.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="lightsource.fs">

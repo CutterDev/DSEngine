@@ -137,9 +137,12 @@
     <ClCompile Include="BasicCubeNode.cpp" />
     <ClCompile Include="DSEngine.cpp" />
     <ClCompile Include="DSRenderer.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="IComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="std_image.cpp" />
@@ -150,19 +153,22 @@
     <ClInclude Include="DSCore.h" />
     <ClInclude Include="DSEngine.h" />
     <ClInclude Include="DSRenderer.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameNode.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IComponent.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lightsource.fs" />
-    <None Include="shader.fs">
+    <None Include="litshader.fs">
       <DeploymentContent>true</DeploymentContent>
     </None>
-    <None Include="shader.vs">
+    <None Include="litshader.vs">
       <DeploymentContent>true</DeploymentContent>
     </None>
   </ItemGroup>
