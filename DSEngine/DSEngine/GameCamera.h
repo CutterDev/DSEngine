@@ -13,6 +13,7 @@ private:
     float m_CameraSpeed = 50.0f;
     glm::vec3 m_CameraFront;
     glm::vec3 m_CameraUp;
+    glm::vec3 m_CameraRight;
     float m_Yaw = -90.0f;
     float m_Pitch = 0.0f;
     float m_LastX = 800.0f / 2.0;
@@ -25,9 +26,9 @@ public:
 
     GameCamera() 
     { 
-        Projection = glm::mat4(1.0f); 
-        View = glm::mat4(1.0f); 
-        Position = glm::vec3(0.0f, 0.0f, 3.0f);
+        Projection = glm::mat4(0.0f); 
+        View = glm::mat4(0.0f); 
+        Position = glm::vec3(0.0f, 0.0f, 0.5f);
         m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
@@ -51,9 +52,15 @@ public:
     {
         float speed = deltaTime * m_CameraSpeed;
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            Position += speed * m_CameraFront;
+        {
+            Position += speed * m_CameraUp;
+        }
+
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            Position -= speed * m_CameraFront;
+        {
+            Position += speed  * -m_CameraUp;
+        }
+
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             Position -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * speed;
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)

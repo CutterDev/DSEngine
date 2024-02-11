@@ -42,6 +42,7 @@ void DSRenderer::Initialize(int width, int height)
     }
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
 }
 
 bool DSRenderer::WindowShouldClose()

@@ -2,17 +2,22 @@
 #include <glm/glm.hpp>
 
 #include <vector>
-
+#include <string>
+#include <memory>
 #include "IComponent.h"
 
 class Entity
 {
 public:
-    alignas(16) glm::mat4 Transform;
+    glm::vec2 Position;
+    float Rotation;
+    glm::vec2 Size; // Not a scale.
 private:
-    std::vector<IComponent> m_Components;
+    std::string m_Name;
+    std::vector<std::shared_ptr<IComponent>> m_Components;
 public:
-    void AddComponent(IComponent component);
+    Entity(std::string name);
+    void AddComponent(IComponent& component);
     void RemoveComponent(IComponent component);
     void UpdateComponents();
 

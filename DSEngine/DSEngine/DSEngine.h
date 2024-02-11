@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "Shader.h"
-#include "stb_image.h"
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,7 +14,10 @@
 #include <glm/gtx/string_cast.hpp>
 #include "BasicCubeNode.h"
 #include "DSRenderer.h"
+#include "Sprite.h"
 #include "DSCore.h"
+#include "SpriteComponent.h"
+#include "EntityManager.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
@@ -24,10 +27,11 @@ class DSEngine
 {
 private:
     // settings
-    const unsigned int SCR_WIDTH = 800;
-    const unsigned int SCR_HEIGHT = 600;
+    const unsigned int SCR_WIDTH = 1920;
+    const unsigned int SCR_HEIGHT = 1080;
 
     DSRenderer m_Renderer;
+    EntityManager m_EntityManager;
 public:
     void Run();
 

@@ -31,6 +31,12 @@
     <Filter Include="Header Files\Entities">
       <UniqueIdentifier>{d9276e4f-9e8f-4b4c-97a7-feb464d732ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ComponentData">
+      <UniqueIdentifier>{03e3b284-e5f7-4b46-b27f-d5e201c1f6f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentData">
+      <UniqueIdentifier>{386a7834-e3f5-4ba4-b99b-8a8902fee2a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -75,6 +81,18 @@
     <ClCompile Include="IComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\ComponentData</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Source Files\ComponentData</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteManager.cpp">
+      <Filter>Source Files\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -116,6 +134,18 @@
     <ClInclude Include="IComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Header Files\ComponentData</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteManager.h">
+      <Filter>Header Files\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="litshader.vs">
@@ -125,6 +155,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="lightsource.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sprite.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sprite.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

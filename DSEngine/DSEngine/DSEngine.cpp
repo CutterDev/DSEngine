@@ -5,16 +5,37 @@ GameCamera Camera;
 float E_DeltaTime = 0.0f;
 float lastFrameTime = 0.0f;
 
+float targetWidth = 640.f;
+float targetHeight = 360.f;
+float aspectRatio = targetWidth / targetHeight;
+
+float zoom = 0.5f;
 void DSEngine::Run()
 {
+    float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
     m_Renderer.Initialize(SCR_WIDTH, SCR_HEIGHT);
-    Shader cubeShader("shader.vs", "shader.fs");
-    Shader floorShader("shader.vs", "shader.fs");
-    Shader lightShader("shader.vs", "lightsource.fs");
+    Shader spriteShader("sprite.vs", "sprite.fs");
 
-    Camera.TranslateView(glm::vec3(0.0f, 0.0f, -3.0f));
-    Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f));
+    Camera.SetProjection(glm::ortho(
+        -aspectRatio * 500.f * zoom,
+        aspectRatio * 500.f * zoom,
+        -500.f * zoom,
+        500.f * zoom,
+        -1.0f,
+        1.0f));
+ 
+    Entity entity("Wall");
+    entity.Size = glm::vec2(100.f, 100.f);
+    SpriteComponent spriteComp(&entity);
+    Sprite sprite = {};
+    sprite.Initialize("wall.jpg", false, &spriteShader);
 
+    spriteComp.AssignSprite(&sprite);
+    spriteComp.AssignShader(&spriteShader);
+
+    entity.AddComponent(spriteComp);
+
+    m_EntityManager.AddEntity(entity);
 
     // render loop
     // -----------
@@ -34,6 +55,10 @@ void DSEngine::Run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         Camera.Update();
+        spriteShader.Use();
+        spriteShader.SetMat4("projection", Camera.Projection);
+        spriteShader.SetMat4("view", Camera.View);
+        m_EntityManager.Update();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -44,8 +69,6 @@ void DSEngine::Run()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    cubeShader.Delete();
-    lightShader.Delete();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
