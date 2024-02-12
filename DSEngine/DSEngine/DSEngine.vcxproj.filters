@@ -37,12 +37,12 @@
     <Filter Include="Source Files\ComponentData">
       <UniqueIdentifier>{386a7834-e3f5-4ba4-b99b-8a8902fee2a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scripts">
+      <UniqueIdentifier>{57128737-3029-4741-9811-3c725361f70c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
@@ -58,12 +58,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicCubeNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DSEngine.cpp">
@@ -93,11 +87,11 @@
     <ClCompile Include="SpriteManager.cpp">
       <Filter>Source Files\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -108,12 +102,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BasicCubeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DSEngine.h">
@@ -144,6 +132,9 @@
       <Filter>Header Files\ComponentData</Filter>
     </ClInclude>
     <ClInclude Include="SpriteManager.h">
+      <Filter>Header Files\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
   </ItemGroup>

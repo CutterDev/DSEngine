@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 
-void EntityManager::AddEntity(Entity entity)
+void EntityManager::AddEntity(Entity* entity)
 {
     m_Entities.push_back(entity);
 }
@@ -12,8 +12,8 @@ void EntityManager::RemoveEntity(Entity entity)
 
 void EntityManager::Update()
 {
-    for (Entity entity : m_Entities)
+    for (Entity* entity : m_Entities)
     {
-        entity.UpdateComponents();
+        entity->UpdateComponents();
     }
 }

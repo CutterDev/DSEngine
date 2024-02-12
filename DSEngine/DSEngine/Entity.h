@@ -17,7 +17,7 @@ private:
     std::vector<std::shared_ptr<IComponent>> m_Components;
 public:
     Entity(std::string name);
-    void AddComponent(IComponent& component);
+    void AddComponent(IComponent* component);
     void RemoveComponent(IComponent component);
     void UpdateComponents();
 

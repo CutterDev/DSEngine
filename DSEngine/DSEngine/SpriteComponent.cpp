@@ -17,8 +17,10 @@ void SpriteComponent::Update()
 {
     // prepare transformations
     m_Shader->Use();
+    m_Shader->SetMat4("projection", MainCamera->Projection);
+    m_Shader->SetMat4("view", MainCamera->View);
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
+    model = glm::translate(model, glm::vec3(p_Entity->Position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
 
     model = glm::translate(model, glm::vec3(0.5f * p_Entity->Size.x, 0.5f * p_Entity->Size.y, 0.0f)); // move origin of rotation to center of quad
     model = glm::rotate(model, glm::radians(p_Entity->Rotation), glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
@@ -36,7 +38,7 @@ void SpriteComponent::Update()
 
 void SpriteComponent::End()
 {
-
+    m_Sprite->Destroy();
 }
 
 void SpriteComponent::AssignSprite(Sprite* sprite)

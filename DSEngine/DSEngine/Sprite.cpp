@@ -4,29 +4,7 @@ void Sprite::Initialize(const char* path, bool alpha, Shader* shader)
 {
     m_Shader = shader;
 
-    if (alpha)
-    {
-        m_Texture.Internal_Format = GL_RGBA;
-        m_Texture.Image_Format = GL_RGBA;
-    }
-
-    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    // load image
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
-
-    if (data)
-    {
-        // now generate texture
-        m_Texture.Generate(width, height, data);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    // and finally free image data
-    stbi_image_free(data);
-
+    m_Texture = ResourceManager::GetInstance().GetTexture(path, alpha);
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     m_Shader->Use();
@@ -38,13 +16,13 @@ void Sprite::Initialize(const char* path, bool alpha, Shader* shader)
     unsigned int VBO;
     float vertices[] = {
         // pos      // tex
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f,
 
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
+        -0.5f, 0.5f, 0.0f, 1.0f,
+        0.5f, 0.5f, 1.0f, 1.0f,
+        0.5f, -0.5f, 1.0f, 0.0f
     };
 
     glGenVertexArrays(1, &this->m_QuadVAO);
@@ -63,7 +41,7 @@ void Sprite::Initialize(const char* path, bool alpha, Shader* shader)
 void Sprite::Draw()
 {
     glActiveTexture(GL_TEXTURE0);
-    m_Texture.Bind();
+    m_Texture->Bind();
 
     glBindVertexArray(this->m_QuadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

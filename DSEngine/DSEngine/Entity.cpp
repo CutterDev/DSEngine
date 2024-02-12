@@ -6,9 +6,9 @@ Entity::Entity(std::string name)
     Size = glm::vec2(1.f);
 }
 
-void Entity::AddComponent(IComponent& component)
+void Entity::AddComponent(IComponent* component)
 {
-    m_Components.push_back(std::shared_ptr<IComponent>(&component));
+    m_Components.push_back(std::shared_ptr<IComponent>(component));
 }
 
 void Entity::UpdateComponents()

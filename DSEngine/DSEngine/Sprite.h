@@ -3,13 +3,13 @@
 #include <glad/glad.h>
 #include "Texture2D.h"
 #include "Shader.h"
-#include "stb_image.h"
+#include "ResourceManager.h"
 
 #include <iostream>
 class Sprite
 {
     unsigned int m_QuadVAO;
-    Texture2D m_Texture;
+    Texture2D* m_Texture;
     glm::vec3 m_Color;
     Shader* m_Shader;
 

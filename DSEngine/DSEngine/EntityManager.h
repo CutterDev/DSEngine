@@ -6,9 +6,9 @@
 class EntityManager
 {
 private:
-    std::vector<Entity> m_Entities;
+    std::vector<Entity*> m_Entities;
 public:
-    void AddEntity(Entity entity);
+    void AddEntity(Entity* entity);
     void RemoveEntity(Entity entity);
     void Update();
 };

@@ -1,8 +1,8 @@
 #include "DSEngine.h"
 
-GameCamera Camera;
-
 float E_DeltaTime = 0.0f;
+std::unique_ptr<GameCamera> MainCamera;
+
 float lastFrameTime = 0.0f;
 
 float targetWidth = 640.f;
@@ -16,7 +16,8 @@ void DSEngine::Run()
     m_Renderer.Initialize(SCR_WIDTH, SCR_HEIGHT);
     Shader spriteShader("sprite.vs", "sprite.fs");
 
-    Camera.SetProjection(glm::ortho(
+    MainCamera = std::make_unique<GameCamera>(GameCamera());
+    MainCamera->SetProjection(glm::ortho(
         -aspectRatio * 500.f * zoom,
         aspectRatio * 500.f * zoom,
         -500.f * zoom,
@@ -24,18 +25,32 @@ void DSEngine::Run()
         -1.0f,
         1.0f));
  
-    Entity entity("Wall");
-    entity.Size = glm::vec2(100.f, 100.f);
-    SpriteComponent spriteComp(&entity);
-    Sprite sprite = {};
-    sprite.Initialize("wall.jpg", false, &spriteShader);
+    for (int i = 0; i < 100; i++)
+    {
+        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        Entity* entity = new Entity("Wall" + i);
+        entity->Size = glm::vec2(100.f, 100.f);
 
-    spriteComp.AssignSprite(&sprite);
-    spriteComp.AssignShader(&spriteShader);
+        SpriteComponent* spriteComp = new SpriteComponent(entity, glm::vec3(r, g, b));
+        Sprite sprite = {};
+        sprite.Initialize("wall.jpg", false, &spriteShader);
 
-    entity.AddComponent(spriteComp);
+        spriteComp->AssignSprite(&sprite);
+        spriteComp->AssignShader(&spriteShader);
 
-    m_EntityManager.AddEntity(entity);
+        entity->AddComponent(spriteComp);
+        std::random_device rd; // obtain a random number from hardware
+        std::mt19937 gen(rd()); // seed the generator
+        std::uniform_int_distribution<> distr(-100, 100); // define the range
+
+        int posX = distr(gen);
+        int posY = distr(gen);
+        m_EntityManager.AddEntity(entity);
+        entity->Position = glm::vec2((float)posX, (float)posY);
+    }
+
 
     // render loop
     // -----------
@@ -54,10 +69,7 @@ void DSEngine::Run()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Camera.Update();
-        spriteShader.Use();
-        spriteShader.SetMat4("projection", Camera.Projection);
-        spriteShader.SetMat4("view", Camera.View);
+        MainCamera->Update();
         m_EntityManager.Update();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -87,10 +99,10 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    Camera.MovementUpdate(window, E_DeltaTime);
+    MainCamera->MovementUpdate(window, E_DeltaTime);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    Camera.UpdateMouse(window, xpos, ypos);
+    MainCamera->UpdateMouse(window, xpos, ypos);
 }

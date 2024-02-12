@@ -1,23 +1,22 @@
 #pragma once
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include "gameobject.h"
 #include "GameCamera.h"
 #include <iostream>
-
+#include <random>
+#include <memory>
+#include <utility>
 #include "Shader.h"
-
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "BasicCubeNode.h"
 #include "DSRenderer.h"
 #include "Sprite.h"
 #include "DSCore.h"
 #include "SpriteComponent.h"
 #include "EntityManager.h"
+
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
