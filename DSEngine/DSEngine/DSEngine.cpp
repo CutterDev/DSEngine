@@ -1,7 +1,5 @@
 #include "DSEngine.h"
 
-
-
 float lastFrameTime = 0.0f;
 
 float targetWidth = 640.f;
@@ -72,6 +70,27 @@ void DSEngine::Run()
         // -----
         processInput(E_GameWindow);
 
+        float speed = E_DeltaTime * 50.f;
+        if (Input->IsPressedUp("MoveUp"))
+        {
+            MainCamera->Translate(speed * glm::vec3(0.f, 1.f, 0.f));
+        }
+
+        if (Input->IsPressedDown("MoveDown"))
+        {
+            MainCamera->Translate(speed * glm::vec3(0.f, -1.f, 0.f));
+        }
+
+        if (Input->IsPressedDown("MoveLeft"))
+        {
+            MainCamera->Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
+        }
+
+        if (Input->IsPressedDown("MoveRight"))
+        {
+            MainCamera->Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
+        }
+
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -109,9 +128,6 @@ void processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
-
-
-    MainCamera->MovementUpdate(window, E_DeltaTime);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)

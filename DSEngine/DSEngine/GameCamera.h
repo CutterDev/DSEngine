@@ -1,10 +1,9 @@
 #ifndef GAMECAMERA_H
 #define GAMECAMERA_H
-#include "GameCamera.h"
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 class GameCamera
@@ -39,6 +38,11 @@ public:
         View = glm::translate(View, pos);
     }
 
+    void Translate(glm::vec3 pos)
+    {
+        Position += pos;
+    }
+
     void SetProjection(glm::highp_mat4 mat4)
     {
         Projection = mat4;
@@ -48,26 +52,6 @@ public:
     {
         View = glm::lookAt(Position, Position + m_CameraFront, m_CameraUp);
     }
-
-    void MovementUpdate(GLFWwindow* window, float deltaTime)
-    {
-        float speed = deltaTime * m_CameraSpeed;
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        {
-            Position += speed * m_CameraUp;
-        }
-
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        {
-            Position += speed  * -m_CameraUp;
-        }
-
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            Position -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * speed;
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            Position += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * speed;
-    }
-
     void UpdateMouse(GLFWwindow* window, double xposIn, double yposIn)
     {
         float xpos = static_cast<float>(xposIn);

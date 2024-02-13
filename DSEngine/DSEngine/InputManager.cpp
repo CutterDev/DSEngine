@@ -6,26 +6,29 @@ void InputManager::PollInputs(GLFWwindow* window)
         // Check if user just pressed
         if (glfwGetKey(window, action.second.KeyCode) == GLFW_PRESS)
         {
+            if (!m_Actions[action.first].Pressed)
+            {
+                m_Actions[action.first].IsPressedDown = true;
+            }
+            else
+            {
+                m_Actions[action.first].IsPressedDown = false;
+            }
+
             m_Actions[action.first].Pressed = true;
-            m_Actions[action.first].IsPressedDown = true;
-        }
-        // if it was already pressed down
-        else if (action.second.IsPressedDown)
-        {
-            // Reset for this frame
-            m_Actions[action.first].IsPressedDown = false;
         }
 
-        if (m_Actions[action.first].Pressed && glfwGetKey(window, action.second.KeyCode) == GLFW_RELEASE)
+        if (glfwGetKey(window, action.second.KeyCode) == GLFW_RELEASE)
         {
+            if (m_Actions[action.first].Pressed)
+            {
+                m_Actions[action.first].IsPressedUp = true;
+            }
+            else
+            {
+                m_Actions[action.first].IsPressedUp = false;
+            }
             m_Actions[action.first].Pressed = false;
-            m_Actions[action.first].IsPressedUp = true;
-        }
-        // if it was already pressed down
-        else if (action.second.IsPressedUp)
-        {
-            // Reset for this frame
-            m_Actions[action.first].IsPressedUp = false;
         }
     }
 }
