@@ -54,9 +54,6 @@
     <ClCompile Include="Triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\GL\GLAD\src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -89,6 +86,15 @@
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Source Files\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\..\..\GL\GLAD\src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="DSCore.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +141,9 @@
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
   </ItemGroup>

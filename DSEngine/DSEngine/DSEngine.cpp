@@ -1,7 +1,6 @@
 #include "DSEngine.h"
 
-float E_DeltaTime = 0.0f;
-std::unique_ptr<GameCamera> MainCamera;
+
 
 float lastFrameTime = 0.0f;
 
@@ -17,6 +16,13 @@ void DSEngine::Run()
     Shader spriteShader("sprite.vs", "sprite.fs");
 
     MainCamera = std::make_unique<GameCamera>(GameCamera());
+    Input = std::make_unique<InputManager>(InputManager());
+    Input->AddAction("Exit", GLFW_KEY_ESCAPE);
+    Input->AddAction("MoveUp", GLFW_KEY_W);
+    Input->AddAction("MoveDown", GLFW_KEY_S);
+    Input->AddAction("MoveLeft", GLFW_KEY_A);
+    Input->AddAction("MoveRight", GLFW_KEY_D);
+    
     MainCamera->SetProjection(glm::ortho(
         -aspectRatio * 500.f * zoom,
         aspectRatio * 500.f * zoom,
@@ -96,8 +102,12 @@ void DSEngine::Tick()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    Input->PollInputs(window);
+    if (Input->IsPressedDown("Exit"))
+    {
         glfwSetWindowShouldClose(window, true);
+    }
+
 
     MainCamera->MovementUpdate(window, E_DeltaTime);
 }

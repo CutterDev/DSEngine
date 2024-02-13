@@ -27,7 +27,6 @@ void Texture2D::Generate(unsigned int width, unsigned int height, unsigned char*
         this->Image_Format,
         GL_UNSIGNED_BYTE,
         data);
-    std::cout << glGetError() << std::endl;
 }
 
 void Texture2D::Bind() const

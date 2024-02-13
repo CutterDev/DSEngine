@@ -8,9 +8,8 @@ void Sprite::Initialize(const char* path, bool alpha, Shader* shader)
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     m_Shader->Use();
-    std::cout << glGetError() << std::endl;
     m_Shader->SetInt("sprite", 0);
-    std::cout << glGetError() << std::endl;
+
 
     // configure VAO/VBO
     unsigned int VBO;

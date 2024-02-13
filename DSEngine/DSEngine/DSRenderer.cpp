@@ -1,6 +1,4 @@
-#include "DSRenderer.h"
-
-GLFWwindow* E_GameWindow;
+#include "DSRenderer.h" 
 
 void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height);
 
