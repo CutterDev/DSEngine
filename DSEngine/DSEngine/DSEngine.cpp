@@ -31,17 +31,19 @@ void DSEngine::Run()
         -1.0f,
         1.0f));
  
-    for (int i = 0; i < 100; i++)
+    Sprite sprite = {};
+    sprite.Initialize("wall.jpg", false, &spriteShader);
+
+
+    for (int i = 0; i < 1000; i++)
     {
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         Entity* entity = new Entity("Wall" + i);
-        entity->Size = glm::vec2(100.f, 100.f);
+        entity->Size = glm::vec2(10.f, 10.f);
 
         SpriteComponent* spriteComp = new SpriteComponent(entity, glm::vec3(r, g, b));
-        Sprite sprite = {};
-        sprite.Initialize("wall.jpg", false, &spriteShader);
 
         spriteComp->AssignSprite(&sprite);
         spriteComp->AssignShader(&spriteShader);
@@ -49,7 +51,7 @@ void DSEngine::Run()
         entity->AddComponent(spriteComp);
         std::random_device rd; // obtain a random number from hardware
         std::mt19937 gen(rd()); // seed the generator
-        std::uniform_int_distribution<> distr(-100, 100); // define the range
+        std::uniform_int_distribution<> distr(-200, 200); // define the range
 
         int posX = distr(gen);
         int posY = distr(gen);
