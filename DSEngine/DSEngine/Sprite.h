@@ -6,21 +6,16 @@
 #include "ResourceManager.h"
 
 #include <iostream>
-#include <vector>
-
-class SpriteComponent;
-
 class Sprite
 {
-
+    unsigned int m_QuadVAO;
     Texture2D* m_Texture;
     glm::vec3 m_Color;
     Shader* m_Shader;
-    std::vector<SpriteComponent*> m_Instances;
+
 public:
     void Initialize(const char* path, bool alpha, Shader* shader);
     void Draw();
-    void AddInstance(SpriteComponent* entity);
     void Destroy();
 };
 
