@@ -12,7 +12,7 @@ void DSEngine::Run()
     float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
     m_Renderer.Initialize(SCR_WIDTH, SCR_HEIGHT);
     Shader spriteShader("sprite.vs", "sprite.fs");
-    
+
     MainCamera = std::make_unique<GameCamera>(GameCamera());
     Input = std::make_unique<InputManager>(InputManager());
     Input->AddAction("Exit", GLFW_KEY_ESCAPE);
@@ -30,26 +30,23 @@ void DSEngine::Run()
         1.0f));
  
     Sprite sprite = {};
+    sprite.Initialize("wall.jpg", false, &spriteShader);
 
-    std::vector<SpriteComponent> components;
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 1000; i++)
     {
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         Entity* entity = new Entity("Wall" + i);
         entity->Size = glm::vec2(10.f, 10.f);
-        
-        SpriteComponent spriteComp(entity, glm::vec3(r, g, b));
 
-        spriteComp.AssignSprite(&sprite);
-        spriteComp.AssignShader(&spriteShader);
+        SpriteComponent* spriteComp = new SpriteComponent(entity, glm::vec3(r, g, b));
 
-        components.push_back(spriteComp);
+        spriteComp->AssignSprite(&sprite);
+        spriteComp->AssignShader(&spriteShader);
 
-
-        entity->AddComponent(&spriteComp);
+        entity->AddComponent(spriteComp);
         std::random_device rd; // obtain a random number from hardware
         std::mt19937 gen(rd()); // seed the generator
         std::uniform_int_distribution<> distr(-200, 200); // define the range
@@ -60,7 +57,6 @@ void DSEngine::Run()
         entity->Position = glm::vec2((float)posX, (float)posY);
     }
 
-    sprite.Initialize("wall.jpg", false, &spriteShader);
 
     // render loop
     // -----------
@@ -75,22 +71,22 @@ void DSEngine::Run()
         processInput(E_GameWindow);
 
         float speed = E_DeltaTime * 50.f;
-        if (Input->IsPressed("MoveUp"))
+        if (Input->IsPressedUp("MoveUp"))
         {
             MainCamera->Translate(speed * glm::vec3(0.f, 1.f, 0.f));
         }
 
-        if (Input->IsPressed("MoveDown"))
+        if (Input->IsPressedDown("MoveDown"))
         {
             MainCamera->Translate(speed * glm::vec3(0.f, -1.f, 0.f));
         }
 
-        if (Input->IsPressed("MoveLeft"))
+        if (Input->IsPressedDown("MoveLeft"))
         {
             MainCamera->Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
 
-        if (Input->IsPressed("MoveRight"))
+        if (Input->IsPressedDown("MoveRight"))
         {
             MainCamera->Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
@@ -102,8 +98,6 @@ void DSEngine::Run()
 
         MainCamera->Update();
         m_EntityManager.Update();
-
-        sprite.Draw();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
