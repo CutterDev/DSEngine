@@ -29,7 +29,6 @@ void SpriteComponent::Update()
 
     glBindVertexArray(VAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)(0), 1000);
-    glBindVertexArray(0);
 }
 
 void SpriteComponent::End()

@@ -11,6 +11,8 @@ void DSEngine::Run()
 {
     float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
     m_Renderer.Initialize(SCR_WIDTH, SCR_HEIGHT);
+    glEnable(GL_DEPTH_TEST);
+
     Shader spriteShader("sprite.vs", "sprite.fs");
 
     MainCamera = std::make_unique<GameCamera>(GameCamera());
@@ -63,22 +65,22 @@ void DSEngine::Run()
     // -----------
     while (!m_Renderer.WindowShouldClose())
     {
+        float currentFrameTime = glfwGetTime();
+        E_DeltaTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
+
         // Measure speed
-        double currentTime = glfwGetTime();
         frameCount++;
         // If a second has passed.
-        if (currentTime - previousTime >= 1.0)
+        if (currentFrameTime - previousTime >= 1.0)
         {
             // Display the frame count here any way you want.
             std::cout<< frameCount << std::endl;
 
             frameCount = 0;
-            previousTime = currentTime;
+            previousTime = currentFrameTime;
         }
 
-        float currentFrameTime = glfwGetTime();
-        E_DeltaTime = currentFrameTime - lastFrameTime;
-        lastFrameTime = currentFrameTime;
 
         // input
         // -----
