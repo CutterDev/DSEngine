@@ -31,7 +31,7 @@ void DSEngine::Run()
         -1.0f,
         1.0f));
     m_SpriteManager = SpriteManager(&spriteShader);
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100000; i++)
     {
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -50,7 +50,7 @@ void DSEngine::Run()
         int posY = distr(gen);
         m_EntityManager.AddEntity(entity);
         entity->Position = glm::vec2((float)posX, (float)posY);
-        spriteComp->Update();
+        spriteComp->Start();
     }
 
 
@@ -75,6 +75,7 @@ void DSEngine::Run()
         if (currentFrameTime - previousTime >= 1.0)
         {
             // Display the frame count here any way you want.
+            std::cout << "==================" << std::endl;
             std::cout<< frameCount << std::endl;
 
             frameCount = 0;
@@ -109,18 +110,23 @@ void DSEngine::Run()
 
         // render
         // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.5f, 0.9f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
         MainCamera->Update();
+
+        spriteShader.Use();
         glActiveTexture(GL_TEXTURE0);
         spriteTex->Bind();
 
-        spriteShader.Use();
-
         spriteShader.SetMat4("projection", MainCamera->Projection);
         spriteShader.SetMat4("view", MainCamera->View);
+        spriteShader.SetVec3("spriteColor", glm::vec3(1.f));
+  
         m_EntityManager.Update();
+        m_SpriteManager.Draw();
+
         //m_SpriteManager.Draw();
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

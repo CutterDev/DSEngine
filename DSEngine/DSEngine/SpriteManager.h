@@ -13,6 +13,7 @@ struct Sprite {
     std::vector<std::shared_ptr<SpriteComponent>> Comps;
     std::vector<glm::mat4> Positions;
     unsigned int Amount;
+    unsigned int VAO;
 };
 
 class SpriteManager

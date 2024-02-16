@@ -18,6 +18,7 @@
 #include "SpriteComponent.h"
 #include "EntityManager.h"
 
+#include "InstrumentHandler.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 

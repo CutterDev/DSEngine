@@ -10,11 +10,6 @@ SpriteComponent::SpriteComponent(Entity* entity, glm::vec3 color) : IComponent(e
 
 void SpriteComponent::Start()
 {
-
-}
-
-void SpriteComponent::Update()
-{
     Model = glm::mat4(1.0f);
     Model = glm::translate(Model, glm::vec3(p_Entity->Position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
 
@@ -23,12 +18,16 @@ void SpriteComponent::Update()
     Model = glm::translate(Model, glm::vec3(-0.5f * p_Entity->Size.x, -0.5f * p_Entity->Size.y, 0.0f)); // move origin back
 
     Model = glm::scale(Model, glm::vec3(p_Entity->Size, 1.0f)); // last scale
+}
 
+void SpriteComponent::Update()
+{
     // render textured quad
-    SpriteShader->SetVec3("spriteColor", Color);
+    //SpriteShader->SetVec3("spriteColor", Color);
 
     glBindVertexArray(VAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)(0), 1000);
+    glBindVertexArray(0);
 }
 
 void SpriteComponent::End()

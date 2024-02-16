@@ -37,8 +37,8 @@ void SpriteManager::Initialize()
     {
         for (unsigned int i = 0; i < it->second.Comps.size(); i++)
         {
-            glGenVertexArrays(1, &it->second.Comps[i]->VAO);
-            glBindVertexArray(it->second.Comps[i]->VAO);
+            glGenVertexArrays(1, &VAO);
+            glBindVertexArray(VAO);
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
             glEnableVertexAttribArray(0);
@@ -58,7 +58,7 @@ void SpriteManager::Initialize()
 
         for (unsigned int i = 0; i < it->second.Comps.size(); i++)
         {
-            glBindVertexArray(it->second.Comps[i]->VAO);
+            glBindVertexArray(VAO);
             // vertex attributes
             std::size_t vec4Size = sizeof(glm::vec4);
             glEnableVertexAttribArray(2);
@@ -111,14 +111,15 @@ std::shared_ptr<SpriteComponent> SpriteManager::CreateSprite(Entity* entity, std
 void SpriteManager::Draw()
 {
 
-    //for (const auto& sprite : m_Sprites)
-    //{
-    //    for (std::shared_ptr<SpriteComponent> comp : sprite.second.Comps)
-    //    {
-
-
-    //    }
-    //}
+    glBindVertexArray(VAO);
+    for (const auto& sprite : m_Sprites)
+    {
+        for (int i = 0; i < 100000; i++)
+        {
+            glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)(0), 100000);
+            glBindVertexArray(0);
+        }
+    }
 }
 
 void SpriteManager::Destroy()

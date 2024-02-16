@@ -146,6 +146,9 @@
     <ClInclude Include="InputManager.h">
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="InstrumentHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="litshader.vs">
