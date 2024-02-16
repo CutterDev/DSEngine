@@ -87,22 +87,22 @@ void DSEngine::Run()
         processInput(E_GameWindow);
 
         float speed = E_DeltaTime * 50.f;
-        if (Input->IsPressedUp("MoveUp"))
+        if (Input->IsPressed("MoveUp"))
         {
             MainCamera->Translate(speed * glm::vec3(0.f, 1.f, 0.f));
         }
 
-        if (Input->IsPressedDown("MoveDown"))
+        if (Input->IsPressed("MoveDown"))
         {
             MainCamera->Translate(speed * glm::vec3(0.f, -1.f, 0.f));
         }
 
-        if (Input->IsPressedDown("MoveLeft"))
+        if (Input->IsPressed("MoveLeft"))
         {
             MainCamera->Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
 
-        if (Input->IsPressedDown("MoveRight"))
+        if (Input->IsPressed("MoveRight"))
         {
             MainCamera->Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
