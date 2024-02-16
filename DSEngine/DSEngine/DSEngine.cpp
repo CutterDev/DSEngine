@@ -124,6 +124,8 @@ void DSEngine::Run()
         spriteShader.SetMat4("view", MainCamera->View);
         spriteShader.SetVec3("spriteColor", glm::vec3(1.f));
   
+        glBindVertexArray(m_SpriteManager.VAO);
+
         m_EntityManager.Update();
         m_SpriteManager.Draw();
 
