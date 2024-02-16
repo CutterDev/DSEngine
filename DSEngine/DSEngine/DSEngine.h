@@ -14,6 +14,7 @@
 #include "DSRenderer.h"
 #include "Sprite.h"
 #include "DSCore.h"
+#include "SpriteManager.h"
 #include "SpriteComponent.h"
 #include "EntityManager.h"
 
@@ -31,6 +32,7 @@ private:
 
     DSRenderer m_Renderer;
     EntityManager m_EntityManager;
+    SpriteManager m_SpriteManager;
 public:
     void Run();
 
