@@ -4,9 +4,8 @@ class Entity;
 
 class IComponent
 {
-protected:
-    Entity* p_Entity; // Entity Component is tied to.
 public:
+    Entity* p_Entity;
     IComponent(Entity* entity);
     virtual void Start() = 0;
     virtual void Update() = 0;

@@ -5,7 +5,7 @@ class Entity;
 
 SpriteComponent::SpriteComponent(Entity* entity, glm::vec3 color) : IComponent(entity)
 {
-    m_Color = color;
+    Color = color;
 }
 
 void SpriteComponent::Start()
@@ -15,38 +15,24 @@ void SpriteComponent::Start()
 
 void SpriteComponent::Update()
 {
-    // prepare transformations
-    m_Shader->Use();
-    m_Shader->SetMat4("projection", MainCamera->Projection);
-    m_Shader->SetMat4("view", MainCamera->View);
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(p_Entity->Position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
+    Model = glm::mat4(1.0f);
+    Model = glm::translate(Model, glm::vec3(p_Entity->Position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
 
-    model = glm::translate(model, glm::vec3(0.5f * p_Entity->Size.x, 0.5f * p_Entity->Size.y, 0.0f)); // move origin of rotation to center of quad
-    model = glm::rotate(model, glm::radians(p_Entity->Rotation), glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
-    model = glm::translate(model, glm::vec3(-0.5f * p_Entity->Size.x, -0.5f * p_Entity->Size.y, 0.0f)); // move origin back
+    Model = glm::translate(Model, glm::vec3(0.5f * p_Entity->Size.x, 0.5f * p_Entity->Size.y, 0.0f)); // move origin of rotation to center of quad
+    Model = glm::rotate(Model, glm::radians(p_Entity->Rotation), glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
+    Model = glm::translate(Model, glm::vec3(-0.5f * p_Entity->Size.x, -0.5f * p_Entity->Size.y, 0.0f)); // move origin back
 
-    model = glm::scale(model, glm::vec3(p_Entity->Size, 1.0f)); // last scale
-
-    m_Shader->SetMat4("model", model);
+    Model = glm::scale(Model, glm::vec3(p_Entity->Size, 1.0f)); // last scale
 
     // render textured quad
-    m_Shader->SetVec3("spriteColor", m_Color);
+    SpriteShader->SetVec3("spriteColor", Color);
 
-    m_Sprite->Draw();
+    glBindVertexArray(VAO);
+    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)(0), 1000);
+    glBindVertexArray(0);
 }
 
 void SpriteComponent::End()
 {
-    m_Sprite->Destroy();
-}
 
-void SpriteComponent::AssignSprite(Sprite* sprite)
-{
-    m_Sprite = sprite;
-}
-
-void SpriteComponent::AssignShader(Shader* shader)
-{
-    m_Shader = shader;
 }

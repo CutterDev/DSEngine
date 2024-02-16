@@ -28,11 +28,7 @@ void DSEngine::Run()
         500.f * zoom,
         -1.0f,
         1.0f));
- 
-    Sprite sprite = {};
-    sprite.Initialize("wall.jpg", false, &spriteShader);
-
-
+    m_SpriteManager = SpriteManager(&spriteShader);
     for (int i = 0; i < 1000; i++)
     {
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -41,10 +37,7 @@ void DSEngine::Run()
         Entity* entity = new Entity("Wall" + i);
         entity->Size = glm::vec2(10.f, 10.f);
 
-        SpriteComponent* spriteComp = new SpriteComponent(entity, glm::vec3(r, g, b));
-
-        spriteComp->AssignSprite(&sprite);
-        spriteComp->AssignShader(&spriteShader);
+        std::shared_ptr<SpriteComponent> spriteComp = m_SpriteManager.CreateSprite(entity, "wall.jpg", false);
 
         entity->AddComponent(spriteComp);
         std::random_device rd; // obtain a random number from hardware
@@ -55,13 +48,34 @@ void DSEngine::Run()
         int posY = distr(gen);
         m_EntityManager.AddEntity(entity);
         entity->Position = glm::vec2((float)posX, (float)posY);
+        spriteComp->Update();
     }
 
+
+    m_SpriteManager.Initialize();
+
+    double previousTime = glfwGetTime();
+    int frameCount = 0;
+
+    Texture2D* spriteTex = ResourceManager::GetInstance().GetTexture("wall.jpg", false);
 
     // render loop
     // -----------
     while (!m_Renderer.WindowShouldClose())
     {
+        // Measure speed
+        double currentTime = glfwGetTime();
+        frameCount++;
+        // If a second has passed.
+        if (currentTime - previousTime >= 1.0)
+        {
+            // Display the frame count here any way you want.
+            std::cout<< frameCount << std::endl;
+
+            frameCount = 0;
+            previousTime = currentTime;
+        }
+
         float currentFrameTime = glfwGetTime();
         E_DeltaTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
@@ -71,22 +85,22 @@ void DSEngine::Run()
         processInput(E_GameWindow);
 
         float speed = E_DeltaTime * 50.f;
-        if (Input->IsPressedUp("MoveUp"))
+        if (Input->IsPressed("MoveUp"))
         {
             MainCamera->Translate(speed * glm::vec3(0.f, 1.f, 0.f));
         }
 
-        if (Input->IsPressedDown("MoveDown"))
+        if (Input->IsPressed("MoveDown"))
         {
             MainCamera->Translate(speed * glm::vec3(0.f, -1.f, 0.f));
         }
 
-        if (Input->IsPressedDown("MoveLeft"))
+        if (Input->IsPressed("MoveLeft"))
         {
             MainCamera->Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
 
-        if (Input->IsPressedDown("MoveRight"))
+        if (Input->IsPressed("MoveRight"))
         {
             MainCamera->Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
@@ -97,8 +111,15 @@ void DSEngine::Run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         MainCamera->Update();
-        m_EntityManager.Update();
+        glActiveTexture(GL_TEXTURE0);
+        spriteTex->Bind();
 
+        spriteShader.Use();
+
+        spriteShader.SetMat4("projection", MainCamera->Projection);
+        spriteShader.SetMat4("view", MainCamera->View);
+        m_EntityManager.Update();
+        //m_SpriteManager.Draw();
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(E_GameWindow);
