@@ -31,7 +31,7 @@ void DSEngine::Run()
         -1.0f,
         1.0f));
     m_SpriteManager = SpriteManager(&spriteShader);
-    for (int i = 0; i < 100000; i++)
+    for (int i = 0; i < 200000; i++)
     {
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -44,7 +44,7 @@ void DSEngine::Run()
         entity->AddComponent(spriteComp);
         std::random_device rd; // obtain a random number from hardware
         std::mt19937 gen(rd()); // seed the generator
-        std::uniform_int_distribution<> distr(-200, 200); // define the range
+        std::uniform_int_distribution<> distr(-300, 300); // define the range
 
         int posX = distr(gen);
         int posY = distr(gen);
@@ -126,7 +126,7 @@ void DSEngine::Run()
   
         glBindVertexArray(m_SpriteManager.VAO);
 
-        m_EntityManager.Update();
+        // m_EntityManager.Update();
         m_SpriteManager.Draw();
 
         //m_SpriteManager.Draw();

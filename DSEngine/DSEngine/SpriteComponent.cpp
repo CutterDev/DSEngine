@@ -24,10 +24,7 @@ void SpriteComponent::Update()
 {
     // render textured quad
     //SpriteShader->SetVec3("spriteColor", Color);
-
-    glBindVertexArray(VAO);
-    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)(0), 1000);
-    glBindVertexArray(0);
+    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)(0), 200000);
 }
 
 void SpriteComponent::End()

@@ -19,12 +19,14 @@ struct Sprite {
 class SpriteManager
 {
 private:
-    unsigned int VAO, VBO, EBO;
+    unsigned int VBO, EBO;
     Shader* m_Shader;
 
     std::map<std::string, Sprite> m_Sprites;
 
 public:
+    unsigned int VAO;
+
     SpriteManager() {}
     SpriteManager(Shader* shader);
     void Initialize();
