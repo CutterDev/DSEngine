@@ -81,7 +81,7 @@
     <ClCompile Include="Texture2D.cpp">
       <Filter>Source Files\ComponentData</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteManager.cpp">
+    <ClCompile Include="TileManager.cpp">
       <Filter>Source Files\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
@@ -137,7 +137,7 @@
     <ClInclude Include="Texture2D.h">
       <Filter>Header Files\ComponentData</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteManager.h">
+    <ClInclude Include="TileManager.h">
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
@@ -160,15 +160,27 @@
     <None Include="lightsource.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sprite.vs">
+    <None Include="tile.gs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="tile.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="sprite.fs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sprite.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="tile.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="wall.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="blocks.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

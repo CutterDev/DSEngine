@@ -148,7 +148,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
-    <ClCompile Include="SpriteManager.cpp" />
+    <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="std_image.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Triangle.cpp" />
@@ -167,7 +167,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteComponent.h" />
-    <ClInclude Include="SpriteManager.h" />
+    <ClInclude Include="TileManager.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Triangle.h" />
@@ -182,8 +182,12 @@
     </None>
     <None Include="sprite.fs" />
     <None Include="sprite.vs" />
+    <None Include="tile.fs" />
+    <None Include="tile.gs" />
+    <None Include="tile.vs" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="blocks.png" />
     <Image Include="wall.jpg">
       <DeploymentContent>true</DeploymentContent>
     </Image>

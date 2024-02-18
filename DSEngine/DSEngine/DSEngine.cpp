@@ -12,8 +12,8 @@ void DSEngine::Run()
     float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
     m_Renderer.Initialize(SCR_WIDTH, SCR_HEIGHT);
     glEnable(GL_DEPTH_TEST);
+    m_TileManager = new TileManager("blocks.png", 32, 1);
 
-    Shader spriteShader("sprite.vs", "sprite.fs");
 
     MainCamera = std::make_unique<GameCamera>(GameCamera());
     Input = std::make_unique<InputManager>(InputManager());
@@ -30,36 +30,31 @@ void DSEngine::Run()
         500.f * zoom,
         -1.0f,
         1.0f));
-    m_SpriteManager = SpriteManager(&spriteShader);
-    for (int i = 0; i < 200000; i++)
-    {
-        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        Entity* entity = new Entity("Wall" + i);
-        entity->Size = glm::vec2(10.f, 10.f);
+    //for (int i = 0; i < 200000; i++)
+    //{
+    //    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    //    float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    //    float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    //    Entity* entity = new Entity("Wall" + i);
+    //    entity->Size = glm::vec2(10.f, 10.f);
 
-        std::shared_ptr<SpriteComponent> spriteComp = m_SpriteManager.CreateSprite(entity, "wall.jpg", false);
+    //    std::random_device rd; // obtain a random number from hardware
+    //    std::mt19937 gen(rd()); // seed the generator
+    //    std::uniform_int_distribution<> distr(-300, 300); // define the range
 
-        entity->AddComponent(spriteComp);
-        std::random_device rd; // obtain a random number from hardware
-        std::mt19937 gen(rd()); // seed the generator
-        std::uniform_int_distribution<> distr(-300, 300); // define the range
+    //    int posX = distr(gen);
+    //    int posY = distr(gen);
+    //    m_EntityManager.AddEntity(entity);
+    //    entity->Position = glm::vec2((float)posX, (float)posY);
+    //}
 
-        int posX = distr(gen);
-        int posY = distr(gen);
-        m_EntityManager.AddEntity(entity);
-        entity->Position = glm::vec2((float)posX, (float)posY);
-        spriteComp->Start();
-    }
-
-
-    m_SpriteManager.Initialize();
+    m_TileManager->CreateTile(0, glm::vec2(1, 1));
+    m_TileManager->Initialize();
 
     double previousTime = glfwGetTime();
     int frameCount = 0;
 
-    Texture2D* spriteTex = ResourceManager::GetInstance().GetTexture("wall.jpg", false);
+    
 
     // render loop
     // -----------
@@ -116,18 +111,8 @@ void DSEngine::Run()
 
         MainCamera->Update();
 
-        spriteShader.Use();
-        glActiveTexture(GL_TEXTURE0);
-        spriteTex->Bind();
-
-        spriteShader.SetMat4("projection", MainCamera->Projection);
-        spriteShader.SetMat4("view", MainCamera->View);
-        spriteShader.SetVec3("spriteColor", glm::vec3(1.f));
   
-        glBindVertexArray(m_SpriteManager.VAO);
-
-        // m_EntityManager.Update();
-        m_SpriteManager.Draw();
+        m_TileManager->Draw();
 
         //m_SpriteManager.Draw();
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

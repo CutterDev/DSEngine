@@ -14,7 +14,7 @@
 #include "DSRenderer.h"
 #include "Sprite.h"
 #include "DSCore.h"
-#include "SpriteManager.h"
+#include "TileManager.h"
 #include "SpriteComponent.h"
 #include "EntityManager.h"
 
@@ -33,7 +33,7 @@ private:
 
     DSRenderer m_Renderer;
     EntityManager m_EntityManager;
-    SpriteManager m_SpriteManager;
+    TileManager* m_TileManager;
 public:
     void Run();
 
