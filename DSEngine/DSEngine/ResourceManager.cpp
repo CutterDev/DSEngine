@@ -1,5 +1,5 @@
 #include "ResourceManager.h"
-Texture2D* ResourceManager::GetTexture(std::string filepath, bool alpha)
+Texture2D ResourceManager::GetTexture(std::string filepath, bool alpha)
 {
     if (m_Textures.find(filepath) == m_Textures.end())
     {
@@ -9,21 +9,20 @@ Texture2D* ResourceManager::GetTexture(std::string filepath, bool alpha)
         int width, height, nrChannels;
         unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &nrChannels, 0);
 
-
-
         if (data)
         {
-            m_Textures[filepath] = new Texture2D();
+            Texture2D tex = Texture2D();
 
             if (alpha)
             {
-                m_Textures[filepath]->Internal_Format = GL_RGBA;
-                m_Textures[filepath]->Image_Format = GL_RGBA;
+                tex.Internal_Format = GL_RGBA;
+                tex.Image_Format = GL_RGBA;
             }
 
             // now generate texture
-            m_Textures[filepath]->Generate(width, height, data);
+            tex.Generate(width, height, data);
 
+            m_Textures[filepath] = tex;
             return m_Textures[filepath];
         }
         else
@@ -44,7 +43,6 @@ ResourceManager::~ResourceManager()
 {
     for (const auto texture : m_Textures)
     {
-        glDeleteTextures(1, &texture.second->ID);
-        delete texture.second;
+        glDeleteTextures(1, &texture.second.ID);
     }
 }

@@ -22,7 +22,7 @@ class TileManager
 private:
     unsigned int VAO, VBO, EBO;
     Shader* m_Shader;
-    Texture2D* tileAtlas;
+    Texture2D tileAtlas;
     // Tiles To be drawn
     std::vector<float> m_Tiles;
     unsigned int m_TileSize;

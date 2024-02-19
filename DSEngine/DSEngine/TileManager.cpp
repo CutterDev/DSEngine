@@ -29,36 +29,54 @@ TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSet
 
     m_Shader = new Shader("tile.vs", "tile.fs", "tile.gs");
 
-    tileAtlas = ResourceManager::GetInstance().GetTexture(texture, true);
-    m_AtlasTilesX = tileAtlas->Width / (tileSize + tileSetSpacing);
-    m_AtlasTilesY = tileAtlas->Height / (tileSize + tileSetSpacing);
+    // Create new Texture was not found.
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // load image
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(texture.c_str(), &width, &height, &nrChannels, 0);
+
+    if (data)
+    {
+        tileAtlas.Internal_Format = GL_RGBA;
+        tileAtlas.Image_Format = GL_RGBA;
+
+        // now generate texture
+        tileAtlas.Generate(width, height, data);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    // and finally free image data
+    stbi_image_free(data);
+
+    m_AtlasTilesX = tileAtlas.Width / (tileSize + tileSetSpacing);
+    m_AtlasTilesY = tileAtlas.Height / (tileSize + tileSetSpacing);
 
 
     m_TileSetCoords[m_AtlasTilesX * m_AtlasTilesY];
 
     int tileId = 0;
 
-    float width = tileAtlas->Width;
-    float height = tileAtlas->Height;
-
+   
     for (int y = 0; y < m_AtlasTilesY; y++)
     {
         for (int x = 0; x < m_AtlasTilesX; x++)
         {
+            float calculation = (float)(tileSetSpacing + (m_AtlasTileSize * x));
             m_TileSetCoords[tileId] = TileCoords{
                 // Top Right
                 glm::vec2((float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width,
-                (float)(tileSetSpacing +(m_AtlasTileSize * y))) / height,
+                (float)(tileSetSpacing +(m_AtlasTileSize * y)) / height),
                 // Bottom Right
                 glm::vec2((float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width,
-                (float)(m_AtlasTileSize + (m_AtlasTileSize * y))) / height,
+                (float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height),
                 // Bottom Left
-                glm::vec2((float)(tileSetSpacing + (m_AtlasTileSize * x)) / width,
-                (float)(m_AtlasTileSize + (m_AtlasTileSize * y))) / height,
-
+                glm::vec2(calculation / width,
+                (float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height),
                 // Top Left
                 glm::vec2((float)(tileSetSpacing + (m_AtlasTileSize * x)) / width,
-                (float)(tileSetSpacing + (m_AtlasTileSize * y))) / height
+                (float)(tileSetSpacing + (m_AtlasTileSize * y)) / height)
             };
 
             tileId++;
@@ -107,7 +125,7 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
     glCheckError();
     glActiveTexture(GL_TEXTURE0);
     glCheckError();
-    tileAtlas->Bind();
+    tileAtlas.Bind();
     glCheckError();
     m_Shader->SetMat4("projection", projection);
     glCheckError();

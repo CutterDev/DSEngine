@@ -136,7 +136,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\..\..\GL\GLAD\src\glad.c" />
     <ClCompile Include="DSCore.cpp" />
-    <ClCompile Include="DSEngine.cpp" />
     <ClCompile Include="DSRenderer.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
@@ -155,7 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DSCore.h" />
-    <ClInclude Include="DSEngine.h" />
     <ClInclude Include="DSRenderer.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />

@@ -16,7 +16,7 @@ class ResourceManager
 {
 private:
     ResourceManager() {}                    // Constructor? (the {} brackets) are needed here.
-    std::map<std::string, Texture2D*> m_Textures;
+    std::map<std::string, Texture2D> m_Textures;
 public:
     static ResourceManager& GetInstance()
     {
@@ -26,7 +26,7 @@ public:
     ResourceManager(ResourceManager const&) = delete;
     void operator=(ResourceManager const&) = delete;
 
-    Texture2D* GetTexture(std::string filepath, bool alpha);
+    Texture2D GetTexture(std::string filepath, bool alpha);
 
     ~ResourceManager();
 };
