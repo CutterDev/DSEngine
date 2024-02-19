@@ -101,8 +101,10 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
         glAttachShader(ID, geometry);
 
     glLinkProgram(ID);
+
     // check for linking errors
     glGetProgramiv(ID, GL_LINK_STATUS, &success);
+
     if (!success) {
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
@@ -128,6 +130,7 @@ void Shader::SetBool(const std::string& name, bool value) const
 void Shader::SetInt(const std::string& name, int value) const
 {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    std::cout << glGetError() << std::endl;
 }
 void Shader::SetFloat(const std::string& name, float value) const
 {

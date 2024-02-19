@@ -17,7 +17,7 @@ void main()
     EmitVertex();  
 
     TexCoords = gs_in[0].tex.zw;
-    gl_Position = pos + vec4( 0.2, -0.2, 0.0, 0.0);    // 2:bottom-right
+    gl_Position = pos + vec4(0.2, -0.2, 0.0, 0.0);    // 2:bottom-right
     EmitVertex();
 
     TexCoords = gs_in[0].tex2.zw;
@@ -25,7 +25,7 @@ void main()
     EmitVertex();
 
     TexCoords = gs_in[0].tex.xy;
-    gl_Position = pos + vec4( 0.2,  0.2, 0.0, 0.0);    // 4:top-right
+    gl_Position = pos + vec4(0.2,  0.2, 0.0, 0.0);    // 4:top-right
     EmitVertex();
-    EndPrimitive();  
+    EndPrimitive();
 }

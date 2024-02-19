@@ -4,7 +4,6 @@ Texture2D* ResourceManager::GetTexture(std::string filepath, bool alpha)
     if (m_Textures.find(filepath) == m_Textures.end())
     {
         // Create new Texture was not found.
-        Texture2D tex = Texture2D();
         stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
         // load image
         int width, height, nrChannels;
@@ -14,18 +13,18 @@ Texture2D* ResourceManager::GetTexture(std::string filepath, bool alpha)
 
         if (data)
         {
+            m_Textures[filepath] = new Texture2D();
+
             if (alpha)
             {
-                tex.Internal_Format = GL_RGBA;
-                tex.Image_Format = GL_RGBA;
+                m_Textures[filepath]->Internal_Format = GL_RGBA;
+                m_Textures[filepath]->Image_Format = GL_RGBA;
             }
 
             // now generate texture
-            tex.Generate(width, height, data);
+            m_Textures[filepath]->Generate(width, height, data);
 
-            m_Textures[filepath] = tex;
-
-            return &m_Textures[filepath];
+            return m_Textures[filepath];
         }
         else
         {
@@ -37,6 +36,15 @@ Texture2D* ResourceManager::GetTexture(std::string filepath, bool alpha)
     }
     else
     {
-        return &m_Textures[filepath];
+        return m_Textures[filepath];
+    }
+}
+
+ResourceManager::~ResourceManager()
+{
+    for (const auto texture : m_Textures)
+    {
+        glDeleteTextures(1, &texture.second->ID);
+        delete texture.second;
     }
 }

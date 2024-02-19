@@ -1,6 +1,5 @@
 #pragma once
 #include "IComponent.h"
-#include "DSCore.h"
 #include "Sprite.h"
 #include "Shader.h"
 #include "GameCamera.h"

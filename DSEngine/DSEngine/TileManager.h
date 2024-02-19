@@ -3,7 +3,6 @@
 #include "Entity.h"
 #include "SpriteComponent.h"
 #include "Shader.h"
-#include "DSCore.h"
 #include <glm/glm.hpp>
 #include <map>
 #include <memory>
@@ -42,7 +41,7 @@ public:
 
     TileManager(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
     void Initialize();
-    void Draw();
+    void Draw(glm::mat4 projection, glm::mat4 view);
     void CreateTile(int tileId, glm::vec2 pos);
     void Destroy();
 };
