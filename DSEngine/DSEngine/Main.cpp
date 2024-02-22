@@ -1,4 +1,5 @@
 #pragma once
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "GameCamera.h"
@@ -35,7 +36,7 @@ float deltaTime = 0.0f;
 
 std::unique_ptr<GameCamera> MainCamera;
 InputManager Input;
-TileManager m_TileManager("blocks.png", 32, 1);
+
 GLFWwindow* GameWindow = nullptr;
 void processInput(GLFWwindow* window);
 void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height);
@@ -54,6 +55,8 @@ int main()
 
 void Run()
 {
+    TileManager m_TileManager("blocks.png", 16, 0);
+
     float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
     glEnable(GL_DEPTH_TEST);
 
@@ -71,25 +74,36 @@ void Run()
         500.f * zoom,
         -1.0f,
         1.0f));
-    //for (int i = 0; i < 200000; i++)
+
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, 5); // define the range
+
+    for (int y = 0; y < 100; y++)
+    {
+        for (int x = 0; x < 100; x++)
+        {
+            int id = distr(gen);
+
+            m_TileManager.CreateTile(id, glm::ivec2(x, y));
+        }
+    }
+
+    //for (int i = 0; i < 100; i++)
     //{
     //    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     //    float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     //    float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    //    Entity* entity = new Entity("Wall" + i);
-    //    entity->Size = glm::vec2(10.f, 10.f);
 
     //    std::random_device rd; // obtain a random number from hardware
     //    std::mt19937 gen(rd()); // seed the generator
-    //    std::uniform_int_distribution<> distr(-300, 300); // define the range
+    //    std::uniform_int_distribution<> distr(0, 50); // define the range
 
     //    int posX = distr(gen);
     //    int posY = distr(gen);
-    //    m_EntityManager.AddEntity(entity);
-    //    entity->Position = glm::vec2((float)posX, (float)posY);
+    //    m_TileManager.CreateTile(34, glm::vec2(posX, posY));
     //}
 
-    m_TileManager.CreateTile(1, glm::vec2(1, 1));
     m_TileManager.Initialize();
 
     double previousTime = glfwGetTime();
@@ -150,7 +164,7 @@ void Run()
         // ------
         glClearColor(0.5f, 0.9f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+   
 
         MainCamera->Update();
 
@@ -212,7 +226,9 @@ void Init()
     glfwSetFramebufferSizeCallback(GameWindow, Framebuffer_Size_Callback);
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-    glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+
 }
 
 void Tick()

@@ -27,8 +27,10 @@ TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSet
     m_TileSpacing = tileSetSpacing;
     m_AtlasTileSize = tileSize + tileSetSpacing;
 
-    m_Shader = new Shader("tile.vs", "tile.fs", "tile.gs");
-
+    m_Shader = new Shader("sprite.vs", "sprite.fs");
+    m_Shader->Use();
+    m_Shader->SetInt("ourTexture", 0);
+    m_Shader->SetFloat("tileSize", m_TileSize);
     // Create new Texture was not found.
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // load image
@@ -53,8 +55,7 @@ TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSet
     m_AtlasTilesX = tileAtlas.Width / (tileSize + tileSetSpacing);
     m_AtlasTilesY = tileAtlas.Height / (tileSize + tileSetSpacing);
 
-
-    m_TileSetCoords[m_AtlasTilesX * m_AtlasTilesY];
+    int totalTile = m_AtlasTilesX * m_AtlasTilesY;
 
     int tileId = 0;
 
@@ -63,100 +64,130 @@ TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSet
     {
         for (int x = 0; x < m_AtlasTilesX; x++)
         {
-            float calculation = (float)(tileSetSpacing + (m_AtlasTileSize * x));
-            m_TileSetCoords[tileId] = TileCoords{
-                // Top Right
-                glm::vec2((float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width,
-                (float)(tileSetSpacing +(m_AtlasTileSize * y)) / height),
-                // Bottom Right
-                glm::vec2((float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width,
-                (float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height),
-                // Bottom Left
-                glm::vec2(calculation / width,
-                (float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height),
+            // Top Right
+            m_AtlasCoords[tileId].Coords[0] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
+            m_AtlasCoords[tileId].Coords[1] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
+            // Bottom Right
+            m_AtlasCoords[tileId].Coords[2] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
+            m_AtlasCoords[tileId].Coords[3] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
+
+            // Bottom Left
+            m_AtlasCoords[tileId].Coords[4] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
+            m_AtlasCoords[tileId].Coords[5] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
                 // Top Left
-                glm::vec2((float)(tileSetSpacing + (m_AtlasTileSize * x)) / width,
-                (float)(tileSetSpacing + (m_AtlasTileSize * y)) / height)
-            };
+            m_AtlasCoords[tileId].Coords[6] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
+            m_AtlasCoords[tileId].Coords[7] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
 
             tileId++;
         }
     }
+
+    Model = glm::mat4(1.0f);
+    Model = glm::translate(Model, glm::vec3(0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
+
+    Model = glm::scale(Model, glm::vec3(m_TileSize, m_TileSize, 1.0f)); // last scale
 }
 
 void TileManager::Initialize()
 {
-    std::size_t vec4Size = sizeof(glm::vec4);
+   
+    float vertices[] = {
+        // positions          // colors        
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f  // top left 
+    };
+    unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
 
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    int dataSize = 10 * sizeof(float);
+    for (int i = 0; i < m_TileAtlasIds.size(); i++)
+    {
+        int tileid = m_TileAtlasIds[i];
+        glBindVertexArray(m_Tiles[tileid].VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_Tiles.size(),
-        &m_Tiles[0],
-        GL_STATIC_DRAW);
-    glCheckError();
-    // Tex // Top Right // Bottom Right
-    glEnableVertexAttribArray(0);
-    glCheckError();
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, dataSize, (void*)0);
-    glCheckError();
-    // Tex // Top Right // Bottom Right
-    glEnableVertexAttribArray(1);
-    glCheckError();
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, dataSize, (void*)(2 * sizeof(float)));
-    glCheckError();
-    // Tex // Bottom Left // Top Left
-    glEnableVertexAttribArray(2);
-    glCheckError();
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, dataSize, (void*)(6 * sizeof(float)));
-    glCheckError();
-    glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        // color attribute
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
+        unsigned int texCoordBuffer;
+        glGenBuffers(1, &texCoordBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
+        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), &m_AtlasCoords[tileid].Coords[0], GL_STATIC_DRAW);
+        
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(2);
+
+        // vertex buffer object
+        unsigned int buffer;
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferData(GL_ARRAY_BUFFER, m_Tiles[tileid].Amount * sizeof(glm::vec3), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+        glVertexAttribDivisor(3, 1);
+
+        glBindVertexArray(0);
+    }
 }
 
 void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
 {
-    m_Shader->Use();
-    glCheckError();
     glActiveTexture(GL_TEXTURE0);
-    glCheckError();
+
     tileAtlas.Bind();
-    glCheckError();
+
+    m_Shader->Use();
+
+
     m_Shader->SetMat4("projection", projection);
-    glCheckError();
+
     m_Shader->SetMat4("view", view);
-    glCheckError();
-    glBindVertexArray(VAO);
+    m_Shader->SetMat4("model", Model);
 
-    glDrawArrays(GL_POINTS, 0, m_Tiles.size());
-}
-
-void TileManager::CreateTile(int tileId, glm::vec2 pos)
-{
-    m_Tiles.push_back(pos.x);
-    m_Tiles.push_back(pos.y);
-
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < m_TileAtlasIds.size(); i++)
     {
-        m_Tiles.push_back(m_TileSetCoords[tileId].Coords[i].x);
-        m_Tiles.push_back(m_TileSetCoords[tileId].Coords[i].y);
-    };
+        int tileId = m_TileAtlasIds[i];
+        glBindVertexArray(m_Tiles[tileId].VAO);
+        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_Tiles[tileId].Amount);
+    }
 }
 
-
-glm::mat4 TileManager::GetTransform(glm::vec2 pos)
+void TileManager::CreateTile(int tileId, glm::ivec2 pos)
 {
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(pos, 0.0f));
+    glm::vec3 gridPos = glm::vec3((glm::vec2)pos * (float)m_TileSize, 0.0f);
+    if (m_Tiles.find(tileId) == m_Tiles.end())
+    {
+        m_TileAtlasIds.push_back(tileId);
 
-    model = glm::scale(model, glm::vec3(m_TileSize, m_TileSize, 1.0f));
-
-    return model;
+        TilesToDraw tile = TilesToDraw{};
+        glGenVertexArrays(1, &tile.VAO);
+        tile.Offsets.push_back(gridPos);
+        tile.Amount = 1;
+        m_Tiles[tileId] = tile;
+    }
+    else {
+        m_Tiles[tileId].Offsets.push_back(gridPos);
+        m_Tiles[tileId].Amount++;
+    }
 }
 
 

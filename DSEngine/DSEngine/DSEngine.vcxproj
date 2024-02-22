@@ -148,7 +148,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TileManager.cpp" />
-    <ClCompile Include="std_image.cpp" />
+    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="blocks.png" />
+    <Image Include="blocks4.png" />
     <Image Include="wall.jpg">
       <DeploymentContent>true</DeploymentContent>
     </Image>

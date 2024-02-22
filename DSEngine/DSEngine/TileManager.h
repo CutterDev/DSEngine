@@ -1,4 +1,5 @@
 #pragma 
+
 #include "ResourceManager.h"
 #include "Entity.h"
 #include "SpriteComponent.h"
@@ -8,13 +9,18 @@
 #include <memory>
 #include <string>
 
-struct Tile {
-    glm::vec2 Position;
+struct TileTexCoords {
     glm::vec2 TexCoords[4];
 };
 
-struct TileCoords {
-    glm::vec2 Coords[4];
+struct TileSetCoords {
+    float Coords[8];
+};
+
+struct TilesToDraw{
+    unsigned int VAO;
+    unsigned int Amount;
+    std::vector<glm::vec3> Offsets;
 };
 
 class TileManager
@@ -23,8 +29,8 @@ private:
     unsigned int VAO, VBO, EBO;
     Shader* m_Shader;
     Texture2D tileAtlas;
-    // Tiles To be drawn
-    std::vector<float> m_Tiles;
+    unsigned int m_TilesAmount;
+
     unsigned int m_TileSize;
     unsigned int m_TileSpacing;
 
@@ -33,16 +39,19 @@ private:
     // How many Tiles in a row
     unsigned int m_AtlasTilesX;
     unsigned int m_AtlasTilesY;
+    
+    std::vector<int> m_TileAtlasIds;
+    std::map<int, TilesToDraw> m_Tiles;
+    std::map<int, TileSetCoords> m_AtlasCoords;
 
-    TileCoords m_TileSetCoords[];
-
-    glm::mat4 GetTransform(glm::vec2 pos);
+    glm::mat4 GetTransform(glm::ivec2 pos);
+    glm::mat4 Model;
 public:
 
     TileManager(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
     void Initialize();
     void Draw(glm::mat4 projection, glm::mat4 view);
-    void CreateTile(int tileId, glm::vec2 pos);
+    void CreateTile(int tileId, glm::ivec2 pos);
     void Destroy();
 };
 

@@ -120,7 +120,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 void Shader::Use()
 {
     glUseProgram(ID);
-    std::cout << glGetError() << std::endl;
 }
 
 void Shader::SetBool(const std::string& name, bool value) const

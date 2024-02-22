@@ -48,7 +48,7 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="std_image.cpp">
+    <ClCompile Include="stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
@@ -175,6 +175,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="blocks.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="blocks4.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

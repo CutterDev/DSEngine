@@ -1,14 +1,18 @@
 #version 330 core
-layout (location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
-layout (location = 2) in mat4 instanceMatrix;
-out vec2 TexCoords;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
+layout (location = 3) in vec3 tileOffset;
+out vec3 ourColor;
+out vec2 TexCoord;
 
-// note that we're omitting the view matrix; the view never changes so we basically have an identity view matrix and can therefore omit it.
 uniform mat4 projection;
-
 uniform mat4 view;
+uniform float tileSize;
+
 void main()
 {
-    TexCoords = vertex.zw;
-    gl_Position = projection * view * instanceMatrix * vec4(vertex.xy, 0.0, 1.0);
+	gl_Position = projection * view * vec4((tileSize * aPos) + tileOffset, 1.0f);
+	ourColor = aColor;
+	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
 }
