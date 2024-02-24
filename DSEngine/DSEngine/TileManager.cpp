@@ -114,7 +114,7 @@ void TileManager::Initialize()
     for (int i = 0; i < m_TileAtlasIds.size(); i++)
     {
         int tileid = m_TileAtlasIds[i];
-        glBindVertexArray(m_Tiles[tileid].VAO);
+        glBindVertexArray(m_TileInstances[tileid].VAO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         // position attribute
@@ -126,22 +126,20 @@ void TileManager::Initialize()
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
-        unsigned int texCoordBuffer;
-        glGenBuffers(1, &texCoordBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
+        glGenBuffers(1, &m_TileInstances[tileid].TexCoordsBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_TileInstances[tileid].TexCoordsBuffer);
         glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), &m_AtlasCoords[tileid].Coords[0], GL_STATIC_DRAW);
         
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(2);
 
         // vertex buffer object
-        unsigned int buffer;
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, m_Tiles[tileid].Amount * sizeof(glm::vec3), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
+        glGenBuffers(1, &m_TileInstances[tileid].PositionsBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_TileInstances[tileid].PositionsBuffer);
+        glBufferData(GL_ARRAY_BUFFER, m_TileInstances[tileid].Amount * sizeof(glm::ivec2), &m_TileInstances[tileid].Offsets[0], GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexAttribIPointer(3, 2, GL_INT, 2 * sizeof(GLint), (void*)0);
 
         glVertexAttribDivisor(3, 1);
 
@@ -166,27 +164,57 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
     for (int i = 0; i < m_TileAtlasIds.size(); i++)
     {
         int tileId = m_TileAtlasIds[i];
-        glBindVertexArray(m_Tiles[tileId].VAO);
-        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_Tiles[tileId].Amount);
+
+        if (m_TileInstances[tileId].Amount > 0)
+        {
+            glBindVertexArray(m_TileInstances[tileId].VAO);
+            glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_TileInstances[tileId].Amount);
+        }
     }
 }
 
 void TileManager::CreateTile(int tileId, glm::ivec2 pos)
 {
-    glm::vec3 gridPos = glm::vec3((glm::vec2)pos * (float)m_TileSize, 0.0f);
-    if (m_Tiles.find(tileId) == m_Tiles.end())
+    
+    if (m_TileInstances.find(tileId) == m_TileInstances.end())
     {
         m_TileAtlasIds.push_back(tileId);
 
         TilesToDraw tile = TilesToDraw{};
         glGenVertexArrays(1, &tile.VAO);
-        tile.Offsets.push_back(gridPos);
+        tile.Offsets.push_back(pos);
         tile.Amount = 1;
-        m_Tiles[tileId] = tile;
+        m_TileInstances[tileId] = tile;
     }
     else {
-        m_Tiles[tileId].Offsets.push_back(gridPos);
-        m_Tiles[tileId].Amount++;
+        m_TileInstances[tileId].Offsets.push_back(pos);
+        m_TileInstances[tileId].Amount++;
+    }
+
+    m_TileIndex[pos].TileId = tileId;
+}
+
+void TileManager::RemoveTile(glm::ivec2 pos)
+{
+    TileIndex tile = m_TileIndex[pos];
+    // Find tile from actual x/y position by posX % TileSize
+    std::vector<glm::ivec2>::iterator position = std::find(m_TileInstances[tile.TileId].Offsets.begin(), m_TileInstances[tile.TileId].Offsets.end(), pos);
+    if (position != m_TileInstances[tile.TileId].Offsets.end()) // == myVector.end() means the element was not found
+    {
+        m_TileInstances[tile.TileId].Offsets.erase(position);
+        m_TileInstances[tile.TileId].Amount--;
+        m_TileIndex[pos].TileId = -1;
+    }
+
+    if (m_TileInstances[tile.TileId].Amount > 0)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_TileInstances[tile.TileId].PositionsBuffer);
+
+        void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+        memcpy(ptr, &m_TileInstances[tile.TileId].Offsets[0], m_TileInstances[tile.TileId].Amount * sizeof(glm::vec2));
+        // make sure to tell OpenGL we're done with the pointer
+        glUnmapBuffer(GL_ARRAY_BUFFER);
     }
 }
 

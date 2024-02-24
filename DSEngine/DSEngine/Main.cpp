@@ -30,7 +30,7 @@ float targetWidth = 640.f;
 float targetHeight = 360.f;
 float aspectRatio = targetWidth / targetHeight;
 
-float zoom = 0.5f;
+float zoom = 0.8f;
 
 float deltaTime = 0.0f;
 
@@ -66,26 +66,27 @@ void Run()
     Input.AddAction("MoveDown", GLFW_KEY_S);
     Input.AddAction("MoveLeft", GLFW_KEY_A);
     Input.AddAction("MoveRight", GLFW_KEY_D);
+    Input.AddAction("Delete", GLFW_KEY_H);
 
     MainCamera->SetProjection(glm::ortho(
         -aspectRatio * 500.f * zoom,
         aspectRatio * 500.f * zoom,
         -500.f * zoom,
         500.f * zoom,
-        -1.0f,
+        0.5f,
         1.0f));
 
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(0, 5); // define the range
 
-    for (int y = 0; y < 100; y++)
+    for (int y = 0; y < 100000; y++)
     {
-        for (int x = 0; x < 100; x++)
+        for (int x = 0; x < 5; x++)
         {
             int id = distr(gen);
 
-            m_TileManager.CreateTile(id, glm::ivec2(x, y));
+            m_TileManager.CreateTile(1, glm::ivec2(x, y));
         }
     }
 
@@ -160,6 +161,10 @@ void Run()
             MainCamera->Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
 
+        if (Input.IsPressedDown("Delete"))
+        {
+            m_TileManager.RemoveTile(glm::ivec2(1,1));
+        }
         // render
         // ------
         glClearColor(0.5f, 0.9f, 0.9f, 1.0f);
