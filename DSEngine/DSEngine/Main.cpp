@@ -74,6 +74,7 @@ void Run()
     Input.AddAction("MoveLeft", GLFW_KEY_A);
     Input.AddAction("MoveRight", GLFW_KEY_D);
     Input.AddAction("Delete", GLFW_KEY_H);
+    Input.AddAction("Create", GLFW_KEY_F);
 
     MainCamera->SetProjection(glm::ortho(
         0.0f,
@@ -163,22 +164,21 @@ void Run()
             MainCamera->Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
         }
 
-        MainCamera->Update();
+        MainCamera->Update(currentWindowWidth, currentWindowHeight);
 
         if (Input.IsPressedDown("Delete"))
         {
-            double x = 2.0 * currentMousePos.x / currentWindowWidth - 1;
-            double y = -1.0 * (currentMousePos.y / (currentWindowHeight / 2) - 1.0);
-            
-            glm::vec4 screenPos = glm::vec4(x, y, -0.5, 1.0f);
-            std::cout << x << y << std::endl;
-            glm::mat4 finalMat = MainCamera->Projection * MainCamera->View;
-
-            glm::mat4 inverseMat = glm::inverse(finalMat);
-            glm::vec3 worldPos = inverseMat * screenPos;
+            glm::vec3 worldPos = MainCamera->ScreenToWorldPos(currentMousePos);
             std::cout << glm::to_string(worldPos) << std::endl;
             m_TileManager.ClearTile(glm::vec2(worldPos.x, worldPos.y));
         }
+
+        if (Input.IsPressedUp("Create"))
+        {
+            glm::vec3 worldPos = MainCamera->ScreenToWorldPos(currentMousePos);
+            m_TileManager.CreateTile(6, glm::vec2(worldPos.x, worldPos.y));
+        }
+
         // render
         // ------
         glClearColor(0.5f, 0.9f, 0.9f, 1.0f);

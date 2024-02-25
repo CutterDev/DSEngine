@@ -128,11 +128,7 @@ void TileManager::Initialize()
         glBindBuffer(GL_ARRAY_BUFFER, m_Tiles[tileid].TexCoordsBuffer);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(2);
-
-        if (m_Tiles[tileid].Amount > 0)
-        {
-            glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), &m_Tiles[tileid].TextureCoords[0], GL_STATIC_DRAW);
-        }
+        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), &m_Tiles[tileid].TextureCoords[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_Tiles[tileid].PositionsBuffer);
 
@@ -141,10 +137,23 @@ void TileManager::Initialize()
         glVertexAttribIPointer(3, 2, GL_INT, 2 * sizeof(GLint), (void*)0);
         glVertexAttribDivisor(3, 1);
 
-        // We will add 
-        if (m_Tiles[tileid].Amount > 0)
+        if (m_Tiles[tileid].Amount == 0)
         {
+            // Allocate storage with 1 dummy data position
+            m_Tiles[tileid].Offsets.push_back(glm::ivec2(0, 0));
+            glBufferData(GL_ARRAY_BUFFER, 1 * sizeof(glm::ivec2), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
+            m_Tiles[tileid].Offsets.pop_back();
+        }
+        else {
             glBufferData(GL_ARRAY_BUFFER, m_Tiles[tileid].Amount * sizeof(glm::ivec2), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
+        }
+
+
+        // Remove dummy position.
+        // BE VERY CAREFUL IF WE TRY TO DRAW THIS ON THE GFX CARD IT WILL DIE.
+        if (m_Tiles[tileid].Amount == 0)
+        {
+            
         }
 
         glBindVertexArray(0);

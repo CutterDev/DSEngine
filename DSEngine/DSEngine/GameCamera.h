@@ -19,6 +19,9 @@ private:
     float m_LastX = 800.0f / 2.0;
     float m_LastY = 600.0 / 2.0;
     float m_Fov = 45.0f;
+
+    int m_CurrentWindowHeight = 0;
+    int m_CurrentWindowWidth = 0;
 public:
     glm::vec3 Position;
     glm::mat4 Projection;
@@ -48,10 +51,13 @@ public:
         Projection = mat4;
     }
     
-    void Update()
+    void Update(int windowWidth, int windowHeight)
     {
+        m_CurrentWindowWidth = windowWidth;
+        m_CurrentWindowHeight = windowHeight;
         View = glm::lookAt(Position, Position + m_CameraFront, m_CameraUp);
     }
+
     void UpdateMouse(GLFWwindow* window, double xposIn, double yposIn)
     {
         float xpos = static_cast<float>(xposIn);
@@ -87,6 +93,20 @@ public:
         front.y = sin(glm::radians(m_Pitch));
         front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
         m_CameraFront = glm::normalize(front);
+    }
+
+    glm::vec3 ScreenToWorldPos(glm::vec2 mousePos)
+    {
+        double x = 2.0 * mousePos.x / m_CurrentWindowWidth - 1;
+        double y = -1.0 * (mousePos.y / (m_CurrentWindowHeight / 2) - 1.0);
+
+        glm::vec4 screenPos = glm::vec4(x, y, -0.5, 1.0f);
+        glm::mat4 finalMat = Projection * View;
+
+        glm::mat4 inverseMat = glm::inverse(finalMat);
+        glm::vec3 worldPos = inverseMat * screenPos;
+
+        return worldPos;
     }
 };
 #endif
