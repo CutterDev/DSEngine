@@ -57,28 +57,31 @@ TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSet
 
     int totalTile = m_AtlasTilesX * m_AtlasTilesY;
 
-    int tileId = 0;
+    int tileid = 0;
 
    
     for (int y = 0; y < m_AtlasTilesY; y++)
     {
         for (int x = 0; x < m_AtlasTilesX; x++)
         {
+            m_Tiles[tileid] = {};
+            m_Tiles[tileid].Init();
+
             // Top Right
-            m_AtlasCoords[tileId].Coords[0] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
-            m_AtlasCoords[tileId].Coords[1] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[0] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
+            m_Tiles[tileid].TextureCoords[1] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
             // Bottom Right
-            m_AtlasCoords[tileId].Coords[2] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
-            m_AtlasCoords[tileId].Coords[3] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[2] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
+            m_Tiles[tileid].TextureCoords[3] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
 
             // Bottom Left
-            m_AtlasCoords[tileId].Coords[4] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
-            m_AtlasCoords[tileId].Coords[5] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[4] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
+            m_Tiles[tileid].TextureCoords[5] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
                 // Top Left
-            m_AtlasCoords[tileId].Coords[6] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
-            m_AtlasCoords[tileId].Coords[7] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[6] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
+            m_Tiles[tileid].TextureCoords[7] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
 
-            tileId++;
+            tileid++;
         }
     }
 
@@ -93,10 +96,10 @@ void TileManager::Initialize()
    
     float vertices[] = {
         // positions          // colors        
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f  // top left 
+     1.0f,  0.0f, 0.0f,   1.0f, 0.0f, 0.0f,   // top right
+     1.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   // bottom right
+     0.0f, 1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   // bottom left
+     0.0f,  0.0f, 0.0f,   1.0f, 1.0f, 0.0f  // top left 
     };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
@@ -111,13 +114,13 @@ void TileManager::Initialize()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    for (int i = 0; i < m_TileAtlasIds.size(); i++)
+    for (int i = 0; i < m_Tiles.size(); i++)
     {
-        int tileid = m_TileAtlasIds[i];
-        glBindVertexArray(m_TileInstances[tileid].VAO);
+        int tileid = i;
+        glBindVertexArray(m_Tiles[tileid].VAO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        // position attribute
+        // Vertex attribute
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
 
@@ -126,25 +129,32 @@ void TileManager::Initialize()
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
-        glGenBuffers(1, &m_TileInstances[tileid].TexCoordsBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, m_TileInstances[tileid].TexCoordsBuffer);
-        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), &m_AtlasCoords[tileid].Coords[0], GL_STATIC_DRAW);
-        
+        // Texture Buffer
+        glBindBuffer(GL_ARRAY_BUFFER, m_Tiles[tileid].TexCoordsBuffer);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(2);
 
-        // vertex buffer object
-        glGenBuffers(1, &m_TileInstances[tileid].PositionsBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, m_TileInstances[tileid].PositionsBuffer);
-        glBufferData(GL_ARRAY_BUFFER, m_TileInstances[tileid].Amount * sizeof(glm::ivec2), &m_TileInstances[tileid].Offsets[0], GL_STATIC_DRAW);
+        if (m_Tiles[tileid].Amount > 0)
+        {
+            glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), &m_Tiles[tileid].TextureCoords[0], GL_STATIC_DRAW);
+        }
 
+        glBindBuffer(GL_ARRAY_BUFFER, m_Tiles[tileid].PositionsBuffer);
+
+        // Positions Attribute
         glEnableVertexAttribArray(3);
         glVertexAttribIPointer(3, 2, GL_INT, 2 * sizeof(GLint), (void*)0);
-
         glVertexAttribDivisor(3, 1);
+
+        // We will add 
+        if (m_Tiles[tileid].Amount > 0)
+        {
+            glBufferData(GL_ARRAY_BUFFER, m_Tiles[tileid].Amount * sizeof(glm::ivec2), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
+        }
 
         glBindVertexArray(0);
     }
+    m_IsAlive = true;
 }
 
 void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
@@ -161,34 +171,23 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
     m_Shader->SetMat4("view", view);
     m_Shader->SetMat4("model", Model);
 
-    for (int i = 0; i < m_TileAtlasIds.size(); i++)
+    // TODO: Only go through an active list of tile ids. to save some memory
+    for (int i = 0; i < m_Tiles.size(); i++)
     {
-        int tileId = m_TileAtlasIds[i];
-
-        if (m_TileInstances[tileId].Amount > 0)
-        {
-            glBindVertexArray(m_TileInstances[tileId].VAO);
-            glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_TileInstances[tileId].Amount);
-        }
+        m_Tiles[i].Draw();
     }
 }
 
 void TileManager::CreateTile(int tileId, glm::ivec2 pos)
 {
-    
-    if (m_TileInstances.find(tileId) == m_TileInstances.end())
+    if (m_Tiles.find(tileId) != m_Tiles.end())
     {
-        m_TileAtlasIds.push_back(tileId);
+        m_Tiles[tileId].Offsets.push_back(pos);
+        m_Tiles[tileId].Amount++;
 
-        TilesToDraw tile = TilesToDraw{};
-        glGenVertexArrays(1, &tile.VAO);
-        tile.Offsets.push_back(pos);
-        tile.Amount = 1;
-        m_TileInstances[tileId] = tile;
-    }
-    else {
-        m_TileInstances[tileId].Offsets.push_back(pos);
-        m_TileInstances[tileId].Amount++;
+        if (m_IsAlive) {
+            m_Tiles[tileId].Update();
+        }
     }
 
     m_TileIndex[pos].TileId = tileId;
@@ -200,24 +199,15 @@ void TileManager::ClearTile(glm::vec2 worldPos)
     std::cout << glm::to_string(pos) << std::endl;
     TileIndex tile = m_TileIndex[pos];
     // Find tile from actual x/y position by posX % TileSize
-    std::vector<glm::ivec2>::iterator position = std::find(m_TileInstances[tile.TileId].Offsets.begin(), m_TileInstances[tile.TileId].Offsets.end(), pos);
-    if (position != m_TileInstances[tile.TileId].Offsets.end()) // == myVector.end() means the element was not found
+    std::vector<glm::ivec2>::iterator position = std::find(m_Tiles[tile.TileId].Offsets.begin(), m_Tiles[tile.TileId].Offsets.end(), pos);
+    if (position != m_Tiles[tile.TileId].Offsets.end()) // == myVector.end() means the element was not found
     {
-        m_TileInstances[tile.TileId].Offsets.erase(position);
-        m_TileInstances[tile.TileId].Amount--;
+        m_Tiles[tile.TileId].Offsets.erase(position);
+        m_Tiles[tile.TileId].Amount--;
         m_TileIndex[pos].TileId = -1;
     }
 
-    if (m_TileInstances[tile.TileId].Amount > 0)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, m_TileInstances[tile.TileId].PositionsBuffer);
-
-        void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-        memcpy(ptr, &m_TileInstances[tile.TileId].Offsets[0], m_TileInstances[tile.TileId].Amount * sizeof(glm::vec2));
-        // make sure to tell OpenGL we're done with the pointer
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-    }
+    m_Tiles[tile.TileId].Update();
 }
 
 
