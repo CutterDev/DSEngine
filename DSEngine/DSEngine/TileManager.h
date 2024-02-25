@@ -81,9 +81,6 @@ private:
     std::vector<int> m_ActiveTiles;
     // Tile Positions on the Map Tile Id
     std::unordered_map <glm::ivec2, TileIndex> m_TileIndex;
-
-    glm::mat4 GetTransform(glm::ivec2 pos);
-    glm::mat4 Model;
 public:
 
     TileManager(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
@@ -92,5 +89,7 @@ public:
     void CreateTile(int tileId, glm::ivec2 pos);
     void ClearTile(glm::vec2 worldPos);
     void Destroy();
+
+    glm::ivec2 GetTileFromWorldPos(glm::vec2 worldPos);
 };
 

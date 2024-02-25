@@ -84,11 +84,6 @@ TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSet
             tileid++;
         }
     }
-
-    Model = glm::mat4(1.0f);
-    Model = glm::translate(Model, glm::vec3(0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
-
-    Model = glm::scale(Model, glm::vec3(m_TileSize, m_TileSize, 1.0f)); // last scale
 }
 
 void TileManager::Initialize()
@@ -169,7 +164,6 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
     m_Shader->SetMat4("projection", projection);
 
     m_Shader->SetMat4("view", view);
-    m_Shader->SetMat4("model", Model);
 
     // TODO: Only go through an active list of tile ids. to save some memory
     for (int i = 0; i < m_Tiles.size(); i++)
@@ -195,19 +189,38 @@ void TileManager::CreateTile(int tileId, glm::ivec2 pos)
 
 void TileManager::ClearTile(glm::vec2 worldPos)
 {
-    glm::ivec2 pos = glm::ivec2((int)(worldPos.x / m_TileSize), (int)(worldPos.y / m_TileSize));
-    std::cout << glm::to_string(pos) << std::endl;
+    glm::ivec2 pos = GetTileFromWorldPos(worldPos);
     TileIndex tile = m_TileIndex[pos];
-    // Find tile from actual x/y position by posX % TileSize
-    std::vector<glm::ivec2>::iterator position = std::find(m_Tiles[tile.TileId].Offsets.begin(), m_Tiles[tile.TileId].Offsets.end(), pos);
-    if (position != m_Tiles[tile.TileId].Offsets.end()) // == myVector.end() means the element was not found
+    if (tile.TileId != -1)
     {
-        m_Tiles[tile.TileId].Offsets.erase(position);
-        m_Tiles[tile.TileId].Amount--;
-        m_TileIndex[pos].TileId = -1;
+        // Find tile from actual x/y position by posX % TileSize
+        std::vector<glm::ivec2>::iterator position = std::find(m_Tiles[tile.TileId].Offsets.begin(), m_Tiles[tile.TileId].Offsets.end(), pos);
+        if (position != m_Tiles[tile.TileId].Offsets.end()) // == myVector.end() means the element was not found
+        {
+            m_Tiles[tile.TileId].Offsets.erase(position);
+            m_Tiles[tile.TileId].Amount--;
+            m_TileIndex[pos].TileId = -1;
+        }
+
+        m_Tiles[tile.TileId].Update();
+    }
+}
+
+glm::ivec2 TileManager::GetTileFromWorldPos(glm::vec2 worldPos)
+{
+    glm::ivec2 tilePos = glm::ivec2((int)(worldPos.x / m_TileSize), (int)(worldPos.y / m_TileSize));
+
+
+    if (worldPos.x < 0)
+    {
+        tilePos.x--;
     }
 
-    m_Tiles[tile.TileId].Update();
+    if (worldPos.y < 0)
+    {
+        tilePos.y--;
+    }
+    return tilePos;
 }
 
 

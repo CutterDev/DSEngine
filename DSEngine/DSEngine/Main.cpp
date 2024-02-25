@@ -87,13 +87,21 @@ void Run()
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(0, 5); // define the range
 
-    for (int y = 0; y < 10; y++)
+    for (int y = -10; y < 10; y++)
     {
-        for (int x = 0; x < 10; x++)
+        for (int x = -10; x < 10; x++)
         {
-            int id = distr(gen);
+            int id = 1;
 
-            m_TileManager.CreateTile(1, glm::ivec2(x, y));
+            if (x == 0 && y == 0 ||
+                x == 0 && y == -1 ||
+                x == -1 && y == 0 ||
+                x == -1 && y == -1)
+            {
+                id = 35;
+            }
+
+            m_TileManager.CreateTile(id, glm::ivec2(x, y));
         }
     }
 
