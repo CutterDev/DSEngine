@@ -22,6 +22,9 @@ struct TileAtlas{
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &TexCoordsBuffer);
         glGenBuffers(1, &PositionsBuffer);
+
+        // Todo Allocation of tiles needs to be correctly addressed.
+        Offsets.resize(1000, glm::ivec2(0, 0));
     }
 
     void Update() {
@@ -31,7 +34,7 @@ struct TileAtlas{
 
             void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
-            memcpy(ptr, &Offsets[0], Amount * sizeof(glm::vec2));
+            memcpy(ptr, &Offsets[0], Offsets.size() * sizeof(glm::vec2));
             // make sure to tell OpenGL we're done with the pointer
             glUnmapBuffer(GL_ARRAY_BUFFER);
         }
@@ -88,6 +91,7 @@ public:
     void Draw(glm::mat4 projection, glm::mat4 view);
     void CreateTile(int tileId, glm::ivec2 pos);
     void ClearTile(glm::vec2 worldPos);
+    void SetTile(int tileId, glm::ivec2 pos);
     void Destroy();
 
     glm::ivec2 GetTileFromWorldPos(glm::vec2 worldPos);

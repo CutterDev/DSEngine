@@ -102,7 +102,7 @@ void Run()
                 id = 35;
             }
 
-            m_TileManager.CreateTile(id, glm::ivec2(x, y));
+            m_TileManager.SetTile(id, glm::ivec2(x, y));
         }
     }
 
@@ -166,17 +166,20 @@ void Run()
 
         MainCamera->Update(currentWindowWidth, currentWindowHeight);
 
-        if (Input.IsPressedDown("Delete"))
+        if (Input.IsPressedUp("Delete"))
         {
             glm::vec3 worldPos = MainCamera->ScreenToWorldPos(currentMousePos);
+
+            glm::ivec2 tilePos = m_TileManager.GetTileFromWorldPos(worldPos);
             std::cout << glm::to_string(worldPos) << std::endl;
-            m_TileManager.ClearTile(glm::vec2(worldPos.x, worldPos.y));
+            m_TileManager.SetTile(-1, tilePos);
         }
 
         if (Input.IsPressedUp("Create"))
         {
             glm::vec3 worldPos = MainCamera->ScreenToWorldPos(currentMousePos);
-            m_TileManager.CreateTile(6, glm::vec2(worldPos.x, worldPos.y));
+            glm::ivec2 tilePos = m_TileManager.GetTileFromWorldPos(worldPos);
+            m_TileManager.SetTile(6, tilePos);
         }
 
         // render

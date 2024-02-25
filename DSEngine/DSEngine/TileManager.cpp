@@ -137,16 +137,7 @@ void TileManager::Initialize()
         glVertexAttribIPointer(3, 2, GL_INT, 2 * sizeof(GLint), (void*)0);
         glVertexAttribDivisor(3, 1);
 
-        if (m_Tiles[tileid].Amount == 0)
-        {
-            // Allocate storage with 1 dummy data position
-            m_Tiles[tileid].Offsets.push_back(glm::ivec2(0, 0));
-            glBufferData(GL_ARRAY_BUFFER, 1 * sizeof(glm::ivec2), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
-            m_Tiles[tileid].Offsets.pop_back();
-        }
-        else {
-            glBufferData(GL_ARRAY_BUFFER, m_Tiles[tileid].Amount * sizeof(glm::ivec2), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
-        }
+        glBufferData(GL_ARRAY_BUFFER, m_Tiles[tileid].Offsets.size() * sizeof(glm::ivec2), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
 
 
         // Remove dummy position.
@@ -181,6 +172,63 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
     }
 }
 
+void TileManager::SetTile(int tileId, glm::ivec2 pos)
+{
+    bool instanceExists = m_TileIndex.find(pos) != m_TileIndex.end();
+
+    bool tileIdMatches = false;
+
+    if (instanceExists && m_TileIndex[pos].TileId != -1)
+    {
+        tileIdMatches = tileId == m_TileIndex[pos].TileId;
+
+        if (!tileIdMatches)
+        {
+            int currentId = m_TileIndex[pos].TileId;
+
+            // Remove from Instances
+            // Find tile from actual x/y position by posX % TileSize
+            std::vector<glm::ivec2>::iterator position = std::find(m_Tiles[currentId].Offsets.begin(), m_Tiles[currentId].Offsets.end(), pos);
+            if (position != m_Tiles[currentId].Offsets.end()) // == myVector.end() means the element was not found
+            {
+                m_Tiles[currentId].Offsets.erase(position);
+                m_Tiles[currentId].Offsets.push_back(glm::ivec2(0.f, 0.f));
+                m_Tiles[currentId].Amount--;
+                m_TileIndex[pos].TileId = -1;
+            }
+
+            if (m_IsAlive)
+            {
+                m_Tiles[currentId].Update();
+            }
+        }
+    }
+
+    if (!tileIdMatches && tileId != -1)
+    {
+        if (m_Tiles[tileId].Offsets.size() > m_Tiles[tileId].Amount)
+        {
+            std::vector<glm::ivec2>::iterator position = m_Tiles[tileId].Offsets.begin() + (m_Tiles[tileId].Amount);
+            *position = pos;
+        }
+        else
+        {
+            m_Tiles[tileId].Offsets.push_back(pos);
+        }
+            
+
+        m_Tiles[tileId].Amount++;
+        m_TileIndex[pos].TileId = tileId;
+
+        if (m_IsAlive)
+        {
+            m_Tiles[tileId].Update();
+        }
+
+    }
+    
+}
+
 void TileManager::CreateTile(int tileId, glm::ivec2 pos)
 {
     if (m_Tiles.find(tileId) != m_Tiles.end())
@@ -202,16 +250,7 @@ void TileManager::ClearTile(glm::vec2 worldPos)
     TileIndex tile = m_TileIndex[pos];
     if (tile.TileId != -1)
     {
-        // Find tile from actual x/y position by posX % TileSize
-        std::vector<glm::ivec2>::iterator position = std::find(m_Tiles[tile.TileId].Offsets.begin(), m_Tiles[tile.TileId].Offsets.end(), pos);
-        if (position != m_Tiles[tile.TileId].Offsets.end()) // == myVector.end() means the element was not found
-        {
-            m_Tiles[tile.TileId].Offsets.erase(position);
-            m_Tiles[tile.TileId].Amount--;
-            m_TileIndex[pos].TileId = -1;
-        }
 
-        m_Tiles[tile.TileId].Update();
     }
 }
 
