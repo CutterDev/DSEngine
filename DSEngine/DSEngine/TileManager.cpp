@@ -194,8 +194,10 @@ void TileManager::CreateTile(int tileId, glm::ivec2 pos)
     m_TileIndex[pos].TileId = tileId;
 }
 
-void TileManager::RemoveTile(glm::ivec2 pos)
+void TileManager::ClearTile(glm::vec2 worldPos)
 {
+    glm::ivec2 pos = glm::ivec2((int)(worldPos.x / m_TileSize), (int)(worldPos.y / m_TileSize));
+    std::cout << glm::to_string(pos) << std::endl;
     TileIndex tile = m_TileIndex[pos];
     // Find tile from actual x/y position by posX % TileSize
     std::vector<glm::ivec2>::iterator position = std::find(m_TileInstances[tile.TileId].Offsets.begin(), m_TileInstances[tile.TileId].Offsets.end(), pos);

@@ -60,7 +60,7 @@ public:
     void Initialize();
     void Draw(glm::mat4 projection, glm::mat4 view);
     void CreateTile(int tileId, glm::ivec2 pos);
-    void RemoveTile(glm::ivec2 pos);
+    void ClearTile(glm::vec2 worldPos);
     void Destroy();
 };
 
