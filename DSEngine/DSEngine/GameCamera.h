@@ -31,7 +31,7 @@ public:
     { 
         Projection = glm::mat4(0.0f); 
         View = glm::mat4(0.0f); 
-        Position = glm::vec3(0.0f, 0.0f, 0.5f);
+        Position = glm::vec3(0.0f, 0.0f, 1.f);
         m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }

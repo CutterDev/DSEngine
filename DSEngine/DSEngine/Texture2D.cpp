@@ -5,12 +5,12 @@
 Texture2D::Texture2D()
     : Width(0), Height(0), Internal_Format(GL_RGB), Image_Format(GL_RGB), Wrap_S(GL_REPEAT), Wrap_T(GL_REPEAT), Filter_Min(GL_NEAREST), Filter_Max(GL_NEAREST)
 {
-    glGenTextures(1, &this->ID);
+
 }
 
 void Texture2D::Generate(unsigned int width, unsigned int height, unsigned char* data)
 {
-
+    glGenTextures(1, &this->ID);
     this->Width = width;
     this->Height = height;
     // create Texture

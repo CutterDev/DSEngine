@@ -154,19 +154,19 @@
     <None Include="lightsource.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="tile.gs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="tile.fs">
+    <None Include="e.gs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="sprite.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sprite.vs">
+    <None Include="tile.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="tile.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sprite.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

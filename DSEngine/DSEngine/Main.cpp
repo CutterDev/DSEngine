@@ -14,20 +14,22 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "DSRenderer.h"
+
 #include "Sprite.h"
-#include "TileManager.h"
+
 #include "SpriteComponent.h"
-#include "EntityManager.h"
 #include "InputManager.h"
 #include "InstrumentHandler.h"
 
+#include "EntityManager.h";
+#include "TileManager.h"
+
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 500;
-
-float lastFrameTime = 0.0f;
-
 float currentWindowWidth = 0.0f;
 float currentWindowHeight = 0.0f;
+float lastFrameTime = 0.0f;
+
 
 glm::vec2 currentMousePos = glm::vec2(0.0f);
 
@@ -40,9 +42,10 @@ float zoom = 0.8f;
 float deltaTime = 0.0f;
 
 std::unique_ptr<GameCamera> MainCamera;
+// Modules
 InputManager Input;
-
 GLFWwindow* GameWindow = nullptr;
+
 void processInput(GLFWwindow* window);
 void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -63,10 +66,18 @@ void Run()
     currentWindowWidth = SCR_WIDTH;
     currentWindowHeight = SCR_HEIGHT;
     TileManager m_TileManager("blocks.png", 16, 0);
-
+    //EntityManager EntityManager;
     float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
     glEnable(GL_DEPTH_TEST);
 
+    unsigned int entity = 1;
+    unsigned int entity1 = 2;
+
+    Sprite* sprite = new Sprite("wall.jpg", false);
+    sprite->AddNewSprite(entity, glm::vec3(10.f, 10.f, 0.0f), glm::vec2(1.f), glm::vec3(0.2f, 1.0f, 0.6f));
+    sprite->AddNewSprite(entity, glm::vec3(10.f, 1.f, 0.0f));
+    sprite->AddNewSprite(entity, glm::vec3(5.f, 10.f, 0.0f));
+    //sprite->AddNewSprite(entity1);
     MainCamera = std::make_unique<GameCamera>(GameCamera());
     Input.AddAction("Exit", GLFW_KEY_ESCAPE);
     Input.AddAction("MoveUp", GLFW_KEY_W);
@@ -81,8 +92,8 @@ void Run()
         (float)SCR_WIDTH,
         (float)SCR_HEIGHT,
         0.0f,
-        0.5f,
-        1.0f));
+        0.1f,
+        10.0f));
 
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
@@ -107,7 +118,7 @@ void Run()
     }
 
     m_TileManager.Initialize();
-
+    sprite->Initialize();
     double previousTime = glfwGetTime();
     int frameCount = 0;
 
@@ -140,8 +151,6 @@ void Run()
         // input
         // -----
         processInput(GameWindow);
- 
-
 
         float speed = deltaTime * 50.f;
         if (Input.IsPressed("MoveUp"))
@@ -192,7 +201,7 @@ void Run()
 
 
         m_TileManager.Draw(MainCamera->Projection, MainCamera->View);
-
+        sprite->Draw(MainCamera->Projection, MainCamera->View);
         //m_SpriteManager.Draw();
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

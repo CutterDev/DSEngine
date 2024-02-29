@@ -1,21 +1,19 @@
 #version 330 core
-layout (location = 0) in vec2 pos; // Tex Coords // Top Right, Bottom Right
-layout (location = 1) in vec4 texCoords; // Tex Coords // Top Right, Bottom Right
-layout (location = 2) in vec4 texCoords2; // Tex Coords // Bottom Left, Top Left
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
+layout (location = 3) in ivec2 tileOffset;
+out vec3 ourColor;
+out vec2 TexCoord;
 
-// note that we're omitting the view matrix; the view never changes so we basically have an identity view matrix and can therefore omit it.
 uniform mat4 projection;
-
 uniform mat4 view;
-
-out VS_OUT {
-    vec4 tex;
-    vec4 tex2;
-} vs_out;
+uniform float tileSize;
 
 void main()
 {
-    vs_out.tex = texCoords;
-    vs_out.tex2 = texCoords2;
-    gl_Position = projection * view * vec4(pos, 0.0, 1.0);
+	vec2 offset = tileSize * vec2(tileOffset);
+	gl_Position = projection * view * vec4((tileSize * aPos) + vec3(offset, -3.0f), 1.0f);
+	ourColor = aColor;
+	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
 }

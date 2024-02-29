@@ -178,11 +178,11 @@
     <None Include="litshader.vs">
       <DeploymentContent>true</DeploymentContent>
     </None>
-    <None Include="sprite.fs" />
-    <None Include="sprite.vs" />
     <None Include="tile.fs" />
-    <None Include="tile.gs" />
     <None Include="tile.vs" />
+    <None Include="sprite.fs" />
+    <None Include="e.gs" />
+    <None Include="sprite.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="blocks.png" />

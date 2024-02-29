@@ -27,7 +27,7 @@ TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSet
     m_TileSpacing = tileSetSpacing;
     m_AtlasTileSize = tileSize + tileSetSpacing;
 
-    m_Shader = new Shader("sprite.vs", "sprite.fs");
+    m_Shader = new Shader("tile.vs", "tile.fs");
     m_Shader->Use();
     m_Shader->SetInt("ourTexture", 0);
     m_Shader->SetFloat("tileSize", m_TileSize);
@@ -91,16 +91,15 @@ void TileManager::Initialize()
    
     float vertices[] = {
         // positions          // colors        
-     1.0f,  0.0f, 0.0f,   1.0f, 0.0f, 0.0f,   // top right
-     1.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   // bottom right
-     0.0f, 1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   // bottom left
-     0.0f,  0.0f, 0.0f,   1.0f, 1.0f, 0.0f  // top left 
+     1.0f,  0.0f, 0.f,   1.0f, 0.0f, 0.0f,   // top right
+     1.0f, 1.0f, 0.f,   0.0f, 1.0f, 0.0f,   // bottom right
+     0.0f, 1.0f, 0.f,   0.0f, 0.0f, 1.0f,   // bottom left
+     0.0f,  0.0f, 0.f,   1.0f, 1.0f, 0.0f  // top left 
     };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
     };
-
 
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -139,14 +138,6 @@ void TileManager::Initialize()
 
         glBufferData(GL_ARRAY_BUFFER, m_Tiles[tileid].Offsets.size() * sizeof(glm::ivec2), &m_Tiles[tileid].Offsets[0], GL_STATIC_DRAW);
 
-
-        // Remove dummy position.
-        // BE VERY CAREFUL IF WE TRY TO DRAW THIS ON THE GFX CARD IT WILL DIE.
-        if (m_Tiles[tileid].Amount == 0)
-        {
-            
-        }
-
         glBindVertexArray(0);
     }
     m_IsAlive = true;
@@ -154,9 +145,10 @@ void TileManager::Initialize()
 
 void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
 {
+    tileAtlas.Bind();
     glActiveTexture(GL_TEXTURE0);
 
-    tileAtlas.Bind();
+
 
     m_Shader->Use();
 
@@ -274,7 +266,6 @@ glm::ivec2 TileManager::GetTileFromWorldPos(glm::vec2 worldPos)
 
 void TileManager::Destroy()
 {
-    glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &EBO);
     glDeleteBuffers(1, &VBO);
 
