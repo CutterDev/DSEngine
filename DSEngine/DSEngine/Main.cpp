@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "GameCamera.h"
+
 #include <iostream>
 #include <random>
 #include <memory>
@@ -13,6 +13,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
+
+#include "Game.h"
+
 #include "DSRenderer.h"
 
 #include "Sprite.h"
@@ -22,22 +25,19 @@
 #include "InstrumentHandler.h"
 
 #include "EntityManager.h";
-#include "TileManager.h"
+
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 500;
 float currentWindowWidth = 0.0f;
 float currentWindowHeight = 0.0f;
 float lastFrameTime = 0.0f;
-
-
-glm::vec2 currentMousePos = glm::vec2(0.0f);
-
+float zoom = 0.8f;
 float targetWidth = SCR_WIDTH;
 float targetHeight = SCR_HEIGHT;
 float aspectRatio = targetWidth / targetHeight;
 
-float zoom = 0.8f;
+glm::vec2 currentMousePos = glm::vec2(0.0f);
 
 float deltaTime = 0.0f;
 
@@ -46,15 +46,19 @@ std::unique_ptr<GameCamera> MainCamera;
 InputManager Input;
 GLFWwindow* GameWindow = nullptr;
 
+Game game;
+
 void processInput(GLFWwindow* window);
 void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void Init();
+void InitGL();
 void Run();
 
 int main()
 {
-    Init();
+    InitGL();
+
+    game.Initialize();
 
     Run();
 
@@ -65,27 +69,23 @@ void Run()
 {
     currentWindowWidth = SCR_WIDTH;
     currentWindowHeight = SCR_HEIGHT;
-    TileManager m_TileManager("blocks.png", 16, 0);
+    glEnable(GL_DEPTH_TEST);
+
+
     //EntityManager EntityManager;
     float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
-    glEnable(GL_DEPTH_TEST);
+
 
     unsigned int entity = 1;
     unsigned int entity1 = 2;
 
-    Sprite* sprite = new Sprite("wall.jpg", false);
+
     sprite->AddNewSprite(entity, glm::vec3(10.f, 10.f, 0.0f), glm::vec2(1.f), glm::vec3(0.2f, 1.0f, 0.6f));
     sprite->AddNewSprite(entity, glm::vec3(10.f, 1.f, 0.0f));
     sprite->AddNewSprite(entity, glm::vec3(5.f, 10.f, 0.0f));
     //sprite->AddNewSprite(entity1);
     MainCamera = std::make_unique<GameCamera>(GameCamera());
-    Input.AddAction("Exit", GLFW_KEY_ESCAPE);
-    Input.AddAction("MoveUp", GLFW_KEY_W);
-    Input.AddAction("MoveDown", GLFW_KEY_S);
-    Input.AddAction("MoveLeft", GLFW_KEY_A);
-    Input.AddAction("MoveRight", GLFW_KEY_D);
-    Input.AddAction("Delete", GLFW_KEY_H);
-    Input.AddAction("Create", GLFW_KEY_F);
+
 
     MainCamera->SetProjection(glm::ortho(
         0.0f,
@@ -220,7 +220,7 @@ void Run()
     glfwTerminate();
 }
 
-void Init()
+void InitGL()
 {
     // glfw: initialize and configure
 // ------------------------------
@@ -273,11 +273,7 @@ void Tick()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
-    Input.PollInputs(window);
-    if (Input.IsPressedDown("Exit"))
-    {
-        glfwSetWindowShouldClose(window, true);
-    }
+    game.PollInputs(window);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)

@@ -90,7 +90,7 @@
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="DSCore.cpp">
+    <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,9 +105,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DSCore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DSRenderer.h">
@@ -141,6 +138,9 @@
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
     <ClInclude Include="InstrumentHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

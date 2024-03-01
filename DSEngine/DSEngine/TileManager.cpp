@@ -266,6 +266,11 @@ glm::ivec2 TileManager::GetTileFromWorldPos(glm::vec2 worldPos)
 
 void TileManager::Destroy()
 {
+    for (int i = 0; i < m_Tiles.size(); i++)
+    {
+        m_Tiles[i].Destroy();
+    }
+
     glDeleteBuffers(1, &EBO);
     glDeleteBuffers(1, &VBO);
 

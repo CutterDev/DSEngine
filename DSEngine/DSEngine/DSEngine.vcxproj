@@ -135,10 +135,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\..\..\GL\GLAD\src\glad.c" />
-    <ClCompile Include="DSCore.cpp" />
     <ClCompile Include="DSRenderer.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="IComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -153,10 +153,10 @@
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DSCore.h" />
     <ClInclude Include="DSRenderer.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="IComponent.h" />
     <ClInclude Include="InputManager.h" />
