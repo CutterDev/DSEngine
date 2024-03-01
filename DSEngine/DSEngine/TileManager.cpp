@@ -21,16 +21,16 @@ GLenum glCheckError_(const char* file, int line)
 }
 #define glCheckError() glCheckError_(__FILE__, __LINE__) 
 
-TileManager::TileManager(std::string texture, unsigned int tileSize, int tileSetSpacing)
+void TileManager::Startup(std::string texture, unsigned int tileSize, int tileSetSpacing) 
 {
+    m_Shader.Startup("tile.vs", "tile.fs");
     m_TileSize = tileSize;
     m_TileSpacing = tileSetSpacing;
     m_AtlasTileSize = tileSize + tileSetSpacing;
 
-    m_Shader = new Shader("tile.vs", "tile.fs");
-    m_Shader->Use();
-    m_Shader->SetInt("ourTexture", 0);
-    m_Shader->SetFloat("tileSize", m_TileSize);
+    m_Shader.Use();
+    m_Shader.SetInt("ourTexture", 0);
+    m_Shader.SetFloat("tileSize", m_TileSize);
     // Create new Texture was not found.
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // load image
@@ -150,12 +150,12 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
 
 
 
-    m_Shader->Use();
+    m_Shader.Use();
 
 
-    m_Shader->SetMat4("projection", projection);
+    m_Shader.SetMat4("projection", projection);
 
-    m_Shader->SetMat4("view", view);
+    m_Shader.SetMat4("view", view);
 
     // TODO: Only go through an active list of tile ids. to save some memory
     for (int i = 0; i < m_Tiles.size(); i++)
@@ -274,5 +274,5 @@ void TileManager::Destroy()
     glDeleteBuffers(1, &EBO);
     glDeleteBuffers(1, &VBO);
 
-    m_Shader->Delete();
+    m_Shader.Delete();
 }

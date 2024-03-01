@@ -64,7 +64,7 @@ class TileManager
 {
 private:
     unsigned int VBO, EBO;
-    Shader* m_Shader;
+    Shader m_Shader;
     Texture2D tileAtlas;
     unsigned int m_TilesAmount;
 
@@ -85,9 +85,7 @@ private:
     // Tile Positions on the Map Tile Id
     std::unordered_map <glm::ivec2, TileIndex> m_TileIndex;
 public:
-
-    TileManager() {};
-    TileManager(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
+    void Startup(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
     void Initialize();
     void Draw(glm::mat4 projection, glm::mat4 view);
     void CreateTile(int tileId, glm::ivec2 pos);

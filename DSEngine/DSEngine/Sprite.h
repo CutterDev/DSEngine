@@ -21,14 +21,14 @@ class Sprite
     unsigned int VAO, VBO, EBO;
     unsigned int DataBuffer;
     Texture2D m_Texture;
-    Shader* m_Shader;
+    Shader m_Shader;
     std::vector<SpriteData> Instances;
     std::vector<glm::vec3> Offsets;
     std::map<unsigned int, int> InstanceIndex;
 public:
-    Sprite(const char* path, bool alpha, std::string shader = "sprite");
+    void Startup(const char* path, bool alpha, std::string shader = "sprite");
     void Initialize();
-    void AddNewSprite(unsigned int entityId,
+    void AddNewInstance(unsigned int entityId,
         glm::vec3 pos = glm::vec3(0.f),
         glm::vec2 scale = glm::vec2(1.f),
         glm::vec3 color = glm::vec3(1.f),

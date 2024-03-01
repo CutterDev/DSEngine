@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-Sprite::Sprite(const char* path, bool alpha, std::string shader)
+void Sprite::Startup(const char* path, bool alpha, std::string shader)
 {
     // Create new Texture was not found.
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
@@ -21,13 +21,13 @@ Sprite::Sprite(const char* path, bool alpha, std::string shader)
     // and finally free image data
     stbi_image_free(data);
 
-    m_Shader = new Shader((shader + ".vs").c_str(), (shader + ".fs").c_str());
+    m_Shader.Startup((shader + ".vs").c_str(), (shader + ".fs").c_str());
 }
 
 void Sprite::Initialize()
 {
-    m_Shader->Use();
-    m_Shader->SetInt("sprite", 1);
+    m_Shader.Use();
+    m_Shader.SetInt("sprite", 1);
 
     unsigned int VBO;
     float vertices[] = {
@@ -90,7 +90,7 @@ void Sprite::Initialize()
     glBindVertexArray(0);
 }
 
-void Sprite::AddNewSprite(unsigned int entityId, glm::vec3 pos, glm::vec2 scale, glm::vec3 color, float rotation)
+void Sprite::AddNewInstance(unsigned int entityId, glm::vec3 pos, glm::vec2 scale, glm::vec3 color, float rotation)
 {
     InstanceIndex[entityId] = Amount;
     Instances.push_back(SpriteData{ pos, color, scale, rotation });
@@ -102,14 +102,14 @@ void Sprite::Draw(glm::mat4 projection, glm::mat4 view)
 {
     if (Amount > 0)
     {
-        m_Shader->Use();
+        m_Shader.Use();
         glActiveTexture(GL_TEXTURE1);
 
         m_Texture.Bind();
 
-        m_Shader->SetMat4("projection", projection);
+        m_Shader.SetMat4("projection", projection);
 
-        m_Shader->SetMat4("view", view);
+        m_Shader.SetMat4("view", view);
 
         glBindVertexArray(VAO);
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, Amount);

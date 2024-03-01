@@ -45,7 +45,6 @@ std::unique_ptr<GameCamera> MainCamera;
 // Modules
 InputManager Input;
 GLFWwindow* GameWindow = nullptr;
-
 Game game;
 
 void processInput(GLFWwindow* window);
@@ -58,7 +57,7 @@ int main()
 {
     InitGL();
 
-    game.Initialize();
+    game.Initialize(SCR_WIDTH, SCR_HEIGHT);
 
     Run();
 
@@ -71,54 +70,10 @@ void Run()
     currentWindowHeight = SCR_HEIGHT;
     glEnable(GL_DEPTH_TEST);
 
-
     //EntityManager EntityManager;
     float viewPortRatio = SCR_WIDTH / SCR_HEIGHT;
 
 
-    unsigned int entity = 1;
-    unsigned int entity1 = 2;
-
-
-    sprite->AddNewSprite(entity, glm::vec3(10.f, 10.f, 0.0f), glm::vec2(1.f), glm::vec3(0.2f, 1.0f, 0.6f));
-    sprite->AddNewSprite(entity, glm::vec3(10.f, 1.f, 0.0f));
-    sprite->AddNewSprite(entity, glm::vec3(5.f, 10.f, 0.0f));
-    //sprite->AddNewSprite(entity1);
-    MainCamera = std::make_unique<GameCamera>(GameCamera());
-
-
-    MainCamera->SetProjection(glm::ortho(
-        0.0f,
-        (float)SCR_WIDTH,
-        (float)SCR_HEIGHT,
-        0.0f,
-        0.1f,
-        10.0f));
-
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(0, 5); // define the range
-
-    for (int y = -10; y < 10; y++)
-    {
-        for (int x = -10; x < 10; x++)
-        {
-            int id = 1;
-
-            if (x == 0 && y == 0 ||
-                x == 0 && y == -1 ||
-                x == -1 && y == 0 ||
-                x == -1 && y == -1)
-            {
-                id = 35;
-            }
-
-            m_TileManager.SetTile(id, glm::ivec2(x, y));
-        }
-    }
-
-    m_TileManager.Initialize();
-    sprite->Initialize();
     double previousTime = glfwGetTime();
     int frameCount = 0;
 
@@ -152,56 +107,13 @@ void Run()
         // -----
         processInput(GameWindow);
 
-        float speed = deltaTime * 50.f;
-        if (Input.IsPressed("MoveUp"))
-        {
-            MainCamera->Translate(speed * glm::vec3(0.f, -1.f, 0.f));
-        }
-
-        if (Input.IsPressed("MoveDown"))
-        {
-            MainCamera->Translate(speed * glm::vec3(0.f, 1.f, 0.f));
-        }
-
-        if (Input.IsPressed("MoveLeft"))
-        {
-            MainCamera->Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
-        }
-
-        if (Input.IsPressed("MoveRight"))
-        {
-            MainCamera->Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
-        }
-
-        MainCamera->Update(currentWindowWidth, currentWindowHeight);
-
-        if (Input.IsPressedUp("Delete"))
-        {
-            glm::vec3 worldPos = MainCamera->ScreenToWorldPos(currentMousePos);
-
-            glm::ivec2 tilePos = m_TileManager.GetTileFromWorldPos(worldPos);
-            std::cout << glm::to_string(worldPos) << std::endl;
-            m_TileManager.SetTile(-1, tilePos);
-        }
-
-        if (Input.IsPressedUp("Create"))
-        {
-            glm::vec3 worldPos = MainCamera->ScreenToWorldPos(currentMousePos);
-            glm::ivec2 tilePos = m_TileManager.GetTileFromWorldPos(worldPos);
-            m_TileManager.SetTile(6, tilePos);
-        }
 
         // render
         // ------
         glClearColor(0.5f, 0.9f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
-
-
-
-
-        m_TileManager.Draw(MainCamera->Projection, MainCamera->View);
-        sprite->Draw(MainCamera->Projection, MainCamera->View);
+        game.Tick(deltaTime);
         //m_SpriteManager.Draw();
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -211,7 +123,7 @@ void Run()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    m_TileManager.Destroy();
+    game.Shutdown();
 
     glfwDestroyWindow(GameWindow);
 
@@ -263,12 +175,6 @@ void InitGL()
 
 }
 
-void Tick()
-{
-
-}
-
-
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
@@ -278,7 +184,7 @@ void processInput(GLFWwindow* window)
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    currentMousePos = glm::vec2(xpos, ypos);
+    game.PollMouseInput(xpos, ypos);
 }
 
 void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height)
@@ -289,4 +195,5 @@ void Framebuffer_Size_Callback(GLFWwindow* window, int width, int height)
 
     currentWindowWidth = width;
     currentWindowHeight = height;
+    game.FrameSizeChanged(width, height);
 }

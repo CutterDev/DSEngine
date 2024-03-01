@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
+void Shader::Startup(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
     // Receive the code from file
     std::string vertexCode;
