@@ -31,8 +31,8 @@ void Game::Initialize(unsigned int width, unsigned int height)
     unsigned int entity1 = 2;
 
     sprite.Startup("wall.jpg", false);
-    sprite.AddNewInstance(entity, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.f), glm::vec3(0.8f, 1.0f, 0.6f));
-    sprite.AddNewInstance(entity1, glm::vec3(10.f, 1.f, 0.0f));
+    sprite.AddNewInstance(entity, glm::vec3(10.0f, 0.0f, 0.0f), glm::vec2(1.f), glm::vec3(0.f, 1.0f, 0.f));
+    sprite.AddNewInstance(entity1, glm::vec3(10.f, 3.f, 0.0f));
 
     for (int y = -10; y < 10; y++)
     {
@@ -63,7 +63,7 @@ void Game::Tick(float deltaTime)
     if (m_Input.IsPressed("MoveUp"))
     {
         m_MainCamera.Translate(speed * glm::vec3(0.f, -1.f, 0.f));
-        sprite.UpdatePosition(2, glm::vec3(-10.f, 1.f, 0.0f));
+        //sprite.UpdatePosition(2, glm::vec3(-10.f, 1.f, 0.0f));
     }
 
     if (m_Input.IsPressed("MoveDown"))

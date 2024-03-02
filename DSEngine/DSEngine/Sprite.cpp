@@ -64,24 +64,37 @@ void Sprite::Initialize()
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, DataBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SpriteData) * Amount, &Instances[0], GL_STATIC_DRAW);
+
+    size_t posSize = sizeof(glm::vec3) * Positions.size();
+    size_t colorSize = sizeof(glm::vec3) * Colors.size();
+    size_t scaleSize = sizeof(glm::vec2) * Scales.size();
+    size_t rotSize = sizeof(float) * Rotations.size();
+ 
+    glBufferData(GL_ARRAY_BUFFER, posSize + colorSize + scaleSize + rotSize, &Positions[0], GL_STATIC_DRAW);
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, posSize, &Positions[0]);
+    glBufferSubData(GL_ARRAY_BUFFER, posSize, colorSize, &Colors[0]);
+    glBufferSubData(GL_ARRAY_BUFFER, posSize + colorSize, scaleSize, &Scales[0]);
+    glBufferSubData(GL_ARRAY_BUFFER, posSize + colorSize + scaleSize, rotSize, &Rotations[0]);
+
+
 
     std::cout << sizeof(SpriteData) << std::endl;
     std::cout << alignof(SpriteData) << std::endl;
     // Position
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)0);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
     glEnableVertexAttribArray(2);
 
     // Color
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(offsetof(SpriteData, Color)));
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)posSize);
     glEnableVertexAttribArray(3);
 
     // Scale
-    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(offsetof(SpriteData, Scale)));
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)(posSize + colorSize));
     glEnableVertexAttribArray(4);
 
     // Rotation
-    glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(offsetof(SpriteData, Rotation)));
+    glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)(posSize + colorSize + scaleSize));
     glEnableVertexAttribArray(5);
 
 
@@ -97,7 +110,10 @@ void Sprite::AddNewInstance(unsigned int entityId, glm::vec3 pos, glm::vec2 scal
 {
     InstanceIndex[entityId] = Amount;
     Instances.push_back(SpriteData{ pos, color, scale, rotation });
-    Offsets.push_back(pos);
+    Positions.push_back(pos);
+    Colors.push_back(color);
+    Scales.push_back(scale);
+    Rotations.push_back(rotation);
     Amount++;
 }
 

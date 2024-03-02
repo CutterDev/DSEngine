@@ -23,7 +23,11 @@ class Sprite
     Texture2D m_Texture;
     Shader m_Shader;
     std::vector<SpriteData> Instances;
-    std::vector<glm::vec3> Offsets;
+    std::vector<glm::vec3> Positions;
+    std::vector<glm::vec3> Colors;
+    std::vector<glm::vec2> Scales;
+    std::vector<float> Rotations;
+
     std::map<unsigned int, int> InstanceIndex;
 public:
     void Startup(const char* path, bool alpha, std::string shader = "sprite");
