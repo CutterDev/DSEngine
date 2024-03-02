@@ -221,31 +221,6 @@ void TileManager::SetTile(int tileId, glm::ivec2 pos)
     
 }
 
-void TileManager::CreateTile(int tileId, glm::ivec2 pos)
-{
-    if (m_Tiles.find(tileId) != m_Tiles.end())
-    {
-        m_Tiles[tileId].Offsets.push_back(pos);
-        m_Tiles[tileId].Amount++;
-
-        if (m_IsAlive) {
-            m_Tiles[tileId].Update();
-        }
-    }
-
-    m_TileIndex[pos].TileId = tileId;
-}
-
-void TileManager::ClearTile(glm::vec2 worldPos)
-{
-    glm::ivec2 pos = GetTileFromWorldPos(worldPos);
-    TileIndex tile = m_TileIndex[pos];
-    if (tile.TileId != -1)
-    {
-
-    }
-}
-
 glm::ivec2 TileManager::GetTileFromWorldPos(glm::vec2 worldPos)
 {
     glm::ivec2 tilePos = glm::ivec2((int)(worldPos.x / m_TileSize), (int)(worldPos.y / m_TileSize));

@@ -65,20 +65,23 @@ void Sprite::Initialize()
 
     glBindBuffer(GL_ARRAY_BUFFER, DataBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(SpriteData) * Amount, &Instances[0], GL_STATIC_DRAW);
+
+    std::cout << sizeof(SpriteData) << std::endl;
+    std::cout << alignof(SpriteData) << std::endl;
     // Position
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)0);
     glEnableVertexAttribArray(2);
 
     // Color
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(16 * sizeof(float)));
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(offsetof(SpriteData, Color)));
     glEnableVertexAttribArray(3);
 
     // Scale
-    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(32 * sizeof(float)));
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(offsetof(SpriteData, Scale)));
     glEnableVertexAttribArray(4);
 
     // Rotation
-    glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(40 * sizeof(float)));
+    glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(SpriteData), (void*)(offsetof(SpriteData, Rotation)));
     glEnableVertexAttribArray(5);
 
 
@@ -96,6 +99,25 @@ void Sprite::AddNewInstance(unsigned int entityId, glm::vec3 pos, glm::vec2 scal
     Instances.push_back(SpriteData{ pos, color, scale, rotation });
     Offsets.push_back(pos);
     Amount++;
+}
+
+void Sprite::UpdatePosition(unsigned int entityId, glm::vec3 pos)
+{
+    if (InstanceIndex.find(entityId) != InstanceIndex.end())
+    {
+        int index = InstanceIndex[entityId];
+
+        Instances[index].Position = pos;
+
+        glBindBuffer(GL_ARRAY_BUFFER, DataBuffer);
+
+        void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+        memcpy(ptr, &Instances[0], sizeof(SpriteData) * Instances.size());
+        // make sure to tell OpenGL we're done with the pointer
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
+
 }
 
 void Sprite::Draw(glm::mat4 projection, glm::mat4 view)

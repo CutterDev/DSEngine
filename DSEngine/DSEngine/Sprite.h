@@ -13,7 +13,7 @@ struct SpriteData {
    alignas(16) glm::vec3 Position;
    alignas(16) glm::vec3 Color;
    alignas(8) glm::vec2 Scale;
-   alignas(4) float Rotation;
+   alignas(8) float Rotation;
 };
 class Sprite
 {
