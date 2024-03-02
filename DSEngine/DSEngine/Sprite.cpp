@@ -70,17 +70,13 @@ void Sprite::Initialize()
     size_t scaleSize = sizeof(glm::vec2) * Scales.size();
     size_t rotSize = sizeof(float) * Rotations.size();
  
-    glBufferData(GL_ARRAY_BUFFER, posSize + colorSize + scaleSize + rotSize, &Positions[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, posSize + colorSize + scaleSize + rotSize, NULL, GL_STATIC_DRAW);
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, posSize, &Positions[0]);
     glBufferSubData(GL_ARRAY_BUFFER, posSize, colorSize, &Colors[0]);
     glBufferSubData(GL_ARRAY_BUFFER, posSize + colorSize, scaleSize, &Scales[0]);
     glBufferSubData(GL_ARRAY_BUFFER, posSize + colorSize + scaleSize, rotSize, &Rotations[0]);
 
-
-
-    std::cout << sizeof(SpriteData) << std::endl;
-    std::cout << alignof(SpriteData) << std::endl;
     // Position
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
     glEnableVertexAttribArray(2);
@@ -97,7 +93,6 @@ void Sprite::Initialize()
     glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)(posSize + colorSize + scaleSize));
     glEnableVertexAttribArray(5);
 
-
     glVertexAttribDivisor(2, 1);
     glVertexAttribDivisor(3, 1);
     glVertexAttribDivisor(4, 1);
@@ -109,7 +104,6 @@ void Sprite::Initialize()
 void Sprite::AddNewInstance(unsigned int entityId, glm::vec3 pos, glm::vec2 scale, glm::vec3 color, float rotation)
 {
     InstanceIndex[entityId] = Amount;
-    Instances.push_back(SpriteData{ pos, color, scale, rotation });
     Positions.push_back(pos);
     Colors.push_back(color);
     Scales.push_back(scale);
@@ -123,17 +117,12 @@ void Sprite::UpdatePosition(unsigned int entityId, glm::vec3 pos)
     {
         int index = InstanceIndex[entityId];
 
-        Instances[index].Position = pos;
+        Positions[index] = pos;
 
         glBindBuffer(GL_ARRAY_BUFFER, DataBuffer);
 
-        void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-        memcpy(ptr, &Instances[0], sizeof(SpriteData) * Instances.size());
-        // make sure to tell OpenGL we're done with the pointer
-        glUnmapBuffer(GL_ARRAY_BUFFER);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * Positions.size(), &Positions[0]);
     }
-
 }
 
 void Sprite::Draw(glm::mat4 projection, glm::mat4 view)

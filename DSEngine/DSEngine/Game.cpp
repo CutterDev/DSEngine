@@ -31,7 +31,7 @@ void Game::Initialize(unsigned int width, unsigned int height)
     unsigned int entity1 = 2;
 
     sprite.Startup("wall.jpg", false);
-    sprite.AddNewInstance(entity, glm::vec3(10.0f, 0.0f, 0.0f), glm::vec2(1.f), glm::vec3(0.f, 1.0f, 0.f));
+    sprite.AddNewInstance(entity, spritePos, glm::vec2(1.f), glm::vec3(0.f, 1.0f, 0.f));
     sprite.AddNewInstance(entity1, glm::vec3(10.f, 3.f, 0.0f));
 
     for (int y = -10; y < 10; y++)
@@ -62,25 +62,30 @@ void Game::Tick(float deltaTime)
     float speed = deltaTime * 50.f;
     if (m_Input.IsPressed("MoveUp"))
     {
-        m_MainCamera.Translate(speed * glm::vec3(0.f, -1.f, 0.f));
-        //sprite.UpdatePosition(2, glm::vec3(-10.f, 1.f, 0.0f));
+        //m_MainCamera.Translate(speed * glm::vec3(0.f, -1.f, 0.f));
+        spritePos.y += -speed;
     }
 
     if (m_Input.IsPressed("MoveDown"))
     {
-        m_MainCamera.Translate(speed * glm::vec3(0.f, 1.f, 0.f));
+        //m_MainCamera.Translate(speed * glm::vec3(0.f, 1.f, 0.f));
+        spritePos.y  += speed;
     }
 
     if (m_Input.IsPressed("MoveLeft"))
     {
-        m_MainCamera.Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
+        //m_MainCamera.Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
+        spritePos.x += -speed;
     }
 
     if (m_Input.IsPressed("MoveRight"))
     {
-        m_MainCamera.Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
+        //m_MainCamera.Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
+        spritePos.x += speed;
     }
      
+
+    sprite.UpdatePosition(2, spritePos);
     m_MainCamera.Update(m_Window.Width, m_Window.Height);
 
     if (m_Input.IsPressedUp("Delete"))
