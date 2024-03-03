@@ -32,10 +32,10 @@ void Sprite::Initialize()
     unsigned int VBO;
     float vertices[] = {
         // positions          // texture coords
-         0.5f,  0.5f, 0.f,   1.0f, 1.0f,   // top right
-         0.5f, -0.5f, 0.f,   1.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.f,   0.0f, 0.0f,   // bottom left
-        -0.5f,  0.5f, 0.f,   0.0f, 1.0f    // top left 
+         0.5f,  0.5f, -1.f,   1.0f, 1.0f,   // top right
+         0.5f, -0.5f, -1.f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, -1.f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, -1.f,   0.0f, 1.0f    // top left 
     };
 
     unsigned int indices[] = {
@@ -65,63 +65,59 @@ void Sprite::Initialize()
 
     glBindBuffer(GL_ARRAY_BUFFER, DataBuffer);
 
-    size_t posSize = sizeof(glm::vec3) * Positions.size();
     size_t colorSize = sizeof(glm::vec3) * Colors.size();
-    size_t scaleSize = sizeof(glm::vec2) * Scales.size();
-    size_t rotSize = sizeof(float) * Rotations.size();
- 
-    glBufferData(GL_ARRAY_BUFFER, posSize + colorSize + scaleSize + rotSize, NULL, GL_STATIC_DRAW);
+    size_t vec4Size = sizeof(glm::vec4);
+    size_t transformSize = (vec4Size * 4) * Transforms.size();
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, posSize, &Positions[0]);
-    glBufferSubData(GL_ARRAY_BUFFER, posSize, colorSize, &Colors[0]);
-    glBufferSubData(GL_ARRAY_BUFFER, posSize + colorSize, scaleSize, &Scales[0]);
-    glBufferSubData(GL_ARRAY_BUFFER, posSize + colorSize + scaleSize, rotSize, &Rotations[0]);
 
-    // Position
+    glBufferData(GL_ARRAY_BUFFER, colorSize + transformSize, NULL, GL_STATIC_DRAW);
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, colorSize, &Colors[0]);
+    glBufferSubData(GL_ARRAY_BUFFER, colorSize, transformSize, &Transforms[0]);
+
+    // Color
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
     glEnableVertexAttribArray(2);
 
-    // Color
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)posSize);
-    glEnableVertexAttribArray(3);
-
-    // Scale
-    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)(posSize + colorSize));
+    // Transforms
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(colorSize));
     glEnableVertexAttribArray(4);
-
-    // Rotation
-    glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)(posSize + colorSize + scaleSize));
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(colorSize + (1 * vec4Size)));
     glEnableVertexAttribArray(5);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(colorSize + (2 * vec4Size)));
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(colorSize + (3 * vec4Size)));
+    glEnableVertexAttribArray(7);
 
     glVertexAttribDivisor(2, 1);
-    glVertexAttribDivisor(3, 1);
     glVertexAttribDivisor(4, 1);
     glVertexAttribDivisor(5, 1);
+    glVertexAttribDivisor(6, 1);
+    glVertexAttribDivisor(7, 1);
 
     glBindVertexArray(0);
 }
 
-void Sprite::AddNewInstance(unsigned int entityId, glm::vec3 pos, glm::vec2 scale, glm::vec3 color, float rotation)
+void Sprite::AddNewInstance(unsigned int entityId, glm::mat4 transform, glm::vec3 color)
 {
     InstanceIndex[entityId] = Amount;
-    Positions.push_back(pos);
+    Transforms.push_back(transform);
     Colors.push_back(color);
-    Scales.push_back(scale);
-    Rotations.push_back(rotation);
+
     Amount++;
 }
 
-void Sprite::UpdatePosition(unsigned int entityId, glm::vec3 pos)
+void Sprite::UpdatePosition(unsigned int entityId, glm::mat4 transform)
 {
     if (InstanceIndex.find(entityId) != InstanceIndex.end())
     {
         int index = InstanceIndex[entityId];
 
-        Positions[index] = pos;
+        Transforms[index] = transform;
 
         glBindBuffer(GL_ARRAY_BUFFER, DataBuffer);
 
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * Positions.size(), &Positions[0]);
+        glBufferSubData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * Colors.size(), (sizeof(glm::vec4) * 4) * Transforms.size(), &Transforms[0]);
     }
 }
 

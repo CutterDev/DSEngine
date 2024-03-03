@@ -14,7 +14,7 @@ void Game::SetupInput()
 void Game::Initialize(unsigned int width, unsigned int height)
 {
     m_Window = { (float)width, (float)height };
-    m_TileManager.Startup("blocks.png", 16, 0);
+    m_TileManager.Startup("blocks4.png", 16, 0);
     SetupInput();
 
     m_MainCamera.SetProjection(glm::ortho(
@@ -30,23 +30,23 @@ void Game::Initialize(unsigned int width, unsigned int height)
     unsigned int entity = 1;
     unsigned int entity1 = 2;
 
+    spriteTransform = glm::mat4(1.0f);
+    spriteTransform = glm::translate(spriteTransform, spritePosition);  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
+
+    spriteTransform = glm::translate(spriteTransform, glm::vec3(0.5f * 100, 0.5f * 100, 0.0f)); // move origin of rotation to center of quad
+    spriteTransform = glm::rotate(spriteTransform, glm::radians(10.f), glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
+    spriteTransform = glm::translate(spriteTransform, glm::vec3(-0.5f * 100, -0.5f * 100, 0.0f)); // move origin back
+
+    spriteTransform = glm::scale(spriteTransform, glm::vec3(100.f, 100.f, 1.0f)); // last scale
+
     sprite.Startup("wall.jpg", false);
-    sprite.AddNewInstance(entity, spritePos, glm::vec2(1.f), glm::vec3(0.f, 1.0f, 0.f));
-    sprite.AddNewInstance(entity1, glm::vec3(10.f, 3.f, 0.0f));
+    sprite.AddNewInstance(entity, spriteTransform);
 
-    for (int y = -10; y < 10; y++)
+    for (int y = -1000; y < 1000; y++)
     {
-        for (int x = -10; x < 10; x++)
+        for (int x = -1000; x < 1000; x++)
         {
-            int id = 1;
-
-            if (x == 0 && y == 0 ||
-                x == 0 && y == -1 ||
-                x == -1 && y == 0 ||
-                x == -1 && y == -1)
-            {
-                id = 35;
-            }
+            int id = 15;
 
             m_TileManager.SetTile(id, glm::ivec2(x, y));
         }
@@ -63,32 +63,51 @@ void Game::Tick(float deltaTime)
     if (m_Input.IsPressed("MoveUp"))
     {
         //m_MainCamera.Translate(speed * glm::vec3(0.f, -1.f, 0.f));
-        spritePos.y += -speed;
+        spritePosition.y -= speed;
+        updatePos = true;
     }
 
     if (m_Input.IsPressed("MoveDown"))
     {
         //m_MainCamera.Translate(speed * glm::vec3(0.f, 1.f, 0.f));
-        spritePos.y  += speed;
+        spritePosition.y += speed;
+        updatePos = true;
     }
+
 
     if (m_Input.IsPressed("MoveLeft"))
     {
         //m_MainCamera.Translate(-speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
-        spritePos.x += -speed;
+        spritePosition.x -= speed;
+        updatePos = true;
     }
 
     if (m_Input.IsPressed("MoveRight"))
     {
         //m_MainCamera.Translate(speed * glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f)));
-        spritePos.x += speed;
+        spritePosition.x += speed;
+
+        updatePos = true;
     }
      
+    if (updatePos)
+    {
+        updatePos = false;
+        spriteTransform = glm::mat4(1.0f);
+        spriteTransform = glm::translate(spriteTransform, spritePosition);  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
 
-    sprite.UpdatePosition(2, spritePos);
+        spriteTransform = glm::translate(spriteTransform, glm::vec3(0.5f * 10, 0.5f * 100, 0.0f)); // move origin of rotation to center of quad
+        spriteTransform = glm::rotate(spriteTransform, glm::radians(10.f), glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
+        spriteTransform = glm::translate(spriteTransform, glm::vec3(-0.5f * 10, -0.5f * 100, 0.0f)); // move origin back
+
+        spriteTransform = glm::scale(spriteTransform, glm::vec3(100.f, 100.f, 1.0f)); // last scale
+        sprite.UpdatePosition(1, spriteTransform);
+    }
+
+
     m_MainCamera.Update(m_Window.Width, m_Window.Height);
 
-    if (m_Input.IsPressedUp("Delete"))
+    if (m_Input.IsPressed("Delete"))
     {
         glm::vec3 worldPos = m_MainCamera.ScreenToWorldPos(m_Mouse.Position);
 
@@ -97,7 +116,7 @@ void Game::Tick(float deltaTime)
         m_TileManager.SetTile(-1, tilePos);
     }
 
-    if (m_Input.IsPressedUp("Create"))
+    if (m_Input.IsPressed("Create"))
     {
         glm::vec3 worldPos = m_MainCamera.ScreenToWorldPos(m_Mouse.Position);
         glm::ivec2 tilePos = m_TileManager.GetTileFromWorldPos(worldPos);

@@ -30,7 +30,9 @@ private:
     Sprite sprite;
     Window m_Window;
     Mouse m_Mouse;
-    glm::vec3 spritePos;
+    glm::vec3 spritePosition;
+    glm::mat4 spriteTransform;
+    bool updatePos;
     void SetupInput();
 public:
     void Initialize(unsigned int width, unsigned int height);
