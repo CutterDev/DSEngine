@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -11,6 +12,7 @@
 
 #include "TileManager.h"
 #include "GameCamera.h"
+#include "EntityManager.h"
 
 struct Window {
     float Width;
@@ -27,9 +29,11 @@ private:
     GameCamera m_MainCamera;
     InputManager m_Input;
     TileManager m_TileManager;
-    Sprite sprite;
+    EntityManager m_EntityManager;
+    SpriteComponent sprite;
     Window m_Window;
     Mouse m_Mouse;
+    Entity m_Entity;
     glm::vec3 spritePosition;
     glm::mat4 spriteTransform;
     bool updatePos;

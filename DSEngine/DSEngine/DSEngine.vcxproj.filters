@@ -69,12 +69,6 @@
     <ClCompile Include="IComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files\ComponentData</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Source Files\ComponentData</Filter>
     </ClCompile>
@@ -92,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,18 +117,12 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="SpriteComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
       <Filter>Header Files\ComponentData</Filter>
     </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>Header Files\ComponentData</Filter>
     </ClInclude>
     <ClInclude Include="TileManager.h">
-      <Filter>Header Files\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
       <Filter>Header Files\Modules</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
@@ -142,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

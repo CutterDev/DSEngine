@@ -1,20 +1,18 @@
-#include "Entity.h"
-Entity::Entity(std::string name)
-{
-    m_Name = name;
-    Position = glm::vec2(0.f);
-    Size = glm::vec2(1.f);
-}
-
-void Entity::AddComponent(std::shared_ptr<IComponent> component)
-{
-    m_Components.push_back(component);
-}
-
-void Entity::UpdateComponents()
-{
-    for (std::shared_ptr<IComponent> component : m_Components)
-    {
-        component->Update();
-    }
-}
+//#include "Entity.h"
+//Entity::Entity(std::string name)
+//{
+//
+//}
+//
+//void Entity::AddComponent(std::shared_ptr<IComponent> component)
+//{
+//    m_Components.push_back(component);
+//}
+//
+//void Entity::UpdateComponents()
+//{
+//    for (std::shared_ptr<IComponent> component : m_Components)
+//    {
+//        component->Update();
+//    }
+//}

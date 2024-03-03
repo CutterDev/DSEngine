@@ -145,13 +145,12 @@ void TileManager::Initialize()
 
 void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
 {
-    tileAtlas.Bind();
     glActiveTexture(GL_TEXTURE0);
 
+    tileAtlas.Bind();
 
 
     m_Shader.Use();
-
 
     m_Shader.SetMat4("projection", projection);
 
