@@ -15,18 +15,12 @@ void Game::SetupInput()
 
 void Game::Initialize(unsigned int width, unsigned int height)
 {
-    m_Window = { (float)width, (float)height };
+    m_Window = { (float)width, (float)height, (float)width / (float)height };
     m_TileManager.Startup("blocks.png", 16, 0);
     
     SetupInput();
 
-    m_MainCamera.SetProjection(glm::ortho(
-        0.0f,
-        (float)width,
-        (float)height,
-        0.0f,
-        0.1f,
-        10.0f));
+    m_MainCamera.SetProjection(m_Window.Width, m_Window.Height, m_Window.AspectRatio);
 
     // Add the Scenes/Entities/Sprites
 
@@ -41,7 +35,7 @@ void Game::Initialize(unsigned int width, unsigned int height)
     {
         for (int x = -1000; x < 1000; x++)
         {
-            int id = 1;
+            int id = 2;
 
             m_TileManager.SetTile(id, glm::ivec2(x, y));
         }
@@ -58,14 +52,14 @@ void Game::Tick(float deltaTime)
     if (m_Input.IsPressed("MoveUp"))
     {
         //m_MainCamera.Translate(speed * glm::vec3(0.f, -1.f, 0.f));
-        m_Entity.Position.y -= speed;
+        m_Entity.Position.y += speed;
         updatePos = true;
     }
 
     if (m_Input.IsPressed("MoveDown"))
     {
         //m_MainCamera.Translate(speed * glm::vec3(0.f, 1.f, 0.f));
-        m_Entity.Position.y += speed;
+        m_Entity.Position.y -= speed;
         updatePos = true;
     }
 
@@ -88,12 +82,12 @@ void Game::Tick(float deltaTime)
     if (m_Input.IsPressed("RotateLeft"))
     {
         updatePos = true;
-        m_Entity.Rotation -= speed;
+        m_Entity.Rotation += speed;
     }
     if (m_Input.IsPressed("RotateRight"))
     {
         updatePos = true;
-        m_Entity.Rotation += speed;
+        m_Entity.Rotation -= speed;
     }
     if (updatePos)
     {
@@ -115,7 +109,7 @@ void Game::Tick(float deltaTime)
     {
         glm::vec3 worldPos = m_MainCamera.ScreenToWorldPos(m_Mouse.Position);
         glm::ivec2 tilePos = m_TileManager.GetTileFromWorldPos(worldPos);
-        m_TileManager.SetTile(6, tilePos);
+        m_TileManager.SetTile(65, tilePos);
     }
 
     m_EntityManager.Update(m_MainCamera.Projection, m_MainCamera.View);
@@ -141,6 +135,9 @@ void Game::FrameSizeChanged(int width, int height)
 {
     m_Window.Width = width;
     m_Window.Height = height;
+    m_Window.AspectRatio = m_Window.Width / m_Window.Height;
+
+    m_MainCamera.SetProjection(m_Window.Width, m_Window.Height, m_Window.AspectRatio);
 }
 
 void Game::Shutdown()

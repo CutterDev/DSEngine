@@ -69,17 +69,17 @@ void TileManager::Startup(std::string texture, unsigned int tileSize, int tileSe
 
             // Top Right
             m_Tiles[tileid].TextureCoords[0] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
-            m_Tiles[tileid].TextureCoords[1] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[1] = ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
             // Bottom Right
             m_Tiles[tileid].TextureCoords[2] = (float)(m_AtlasTileSize + (m_AtlasTileSize * x)) / width;
-            m_Tiles[tileid].TextureCoords[3] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[3] = ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
 
             // Bottom Left
             m_Tiles[tileid].TextureCoords[4] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
-            m_Tiles[tileid].TextureCoords[5] = 1.f - ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[5] = ((float)(m_AtlasTileSize + (m_AtlasTileSize * y)) / height);
                 // Top Left
             m_Tiles[tileid].TextureCoords[6] = (float)(tileSetSpacing + (m_AtlasTileSize * x)) / width;
-            m_Tiles[tileid].TextureCoords[7] = 1.f - ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
+            m_Tiles[tileid].TextureCoords[7] = ((float)(tileSetSpacing + (m_AtlasTileSize * y)) / height);
 
             tileid++;
         }
@@ -91,10 +91,10 @@ void TileManager::Initialize()
    
     float vertices[] = {
         // positions          // colors        
-     1.0f,  0.0f, 0.f,   1.0f, 0.0f, 0.0f,   // top right
-     1.0f, 1.0f, 0.f,   0.0f, 1.0f, 0.0f,   // bottom right
-     0.0f, 1.0f, 0.f,   0.0f, 0.0f, 1.0f,   // bottom left
-     0.0f,  0.0f, 0.f,   1.0f, 1.0f, 0.0f  // top left 
+     1.0f,  0.0f, 0.f,   1.0f, 1.0f, 1.0f,   // top right
+     1.0f, 1.0f, 0.f,   1.0f, 1.0f, 1.0f,   // bottom right
+     0.0f, 1.0f, 0.f,   1.0f, 1.0f, 1.0f,   // bottom left
+     0.0f,  0.0f, 0.f,   1.0f, 1.0f, 1.0f  // top left 
     };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
@@ -153,9 +153,7 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
     m_Shader.Use();
 
     m_Shader.SetMat4("projection", projection);
-
     m_Shader.SetMat4("view", view);
-
     // TODO: Only go through an active list of tile ids. to save some memory
     for (int i = 0; i < m_Tiles.size(); i++)
     {

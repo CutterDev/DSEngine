@@ -14,6 +14,7 @@ private:
     glm::vec3 m_CameraFront;
     glm::vec3 m_CameraUp;
     glm::vec3 m_CameraRight;
+    float m_Size = 500.f;
     float m_Yaw = -90.0f;
     float m_Pitch = 0.0f;
     float m_LastX = 800.0f / 2.0;
@@ -46,9 +47,15 @@ public:
         Position += pos;
     }
 
-    void SetProjection(glm::highp_mat4 mat4)
+    void SetProjection(float width, float height, float aspect)
     {
-        Projection = mat4;
+        Projection =glm::ortho(
+                -aspect * m_Size / 2.f,
+                aspect * m_Size / 2.f,
+                -m_Size / 2.f,
+                m_Size / 2.f,
+                0.1f,
+                10.0f);
     }
     
     void Update(int windowWidth, int windowHeight)

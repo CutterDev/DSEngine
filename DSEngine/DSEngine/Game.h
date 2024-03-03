@@ -17,6 +17,7 @@
 struct Window {
     float Width;
     float Height;
+    float AspectRatio;
 };
 
 struct Mouse {

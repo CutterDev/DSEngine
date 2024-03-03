@@ -171,7 +171,6 @@ void InitGL()
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
