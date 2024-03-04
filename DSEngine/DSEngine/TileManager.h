@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include "LightComponent.h"
 
 struct TileAtlas{
     unsigned int VAO;
@@ -87,9 +88,7 @@ private:
 public:
     void Startup(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
     void Initialize();
-    void Draw(glm::mat4 projection, glm::mat4 view);
-    void CreateTile(int tileId, glm::ivec2 pos);
-    void ClearTile(glm::vec2 worldPos);
+    void Draw(glm::mat4 projection, glm::mat4 view, std::vector<Light> lights);
     void SetTile(int tileId, glm::ivec2 pos);
     void Destroy();
 

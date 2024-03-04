@@ -1,4 +1,5 @@
 #include "TileManager.h"
+#include "LightComponent.h"
 GLenum glCheckError_(const char* file, int line)
 {
     GLenum errorCode;
@@ -143,17 +144,25 @@ void TileManager::Initialize()
     m_IsAlive = true;
 }
 
-void TileManager::Draw(glm::mat4 projection, glm::mat4 view)
+void TileManager::Draw(glm::mat4 projection, glm::mat4 view, std::vector<Light> lights)
 {
     glActiveTexture(GL_TEXTURE0);
 
     tileAtlas.Bind();
 
-
     m_Shader.Use();
+    
+    glm::vec4 lightPos = projection * (view * glm::vec4(lights[0].LightPos, 1.0f, 1.0f));
+    glm::vec3 ndsPos = glm::vec3(lightPos) / lightPos.w;
 
+    
     m_Shader.SetMat4("projection", projection);
     m_Shader.SetMat4("view", view);
+    m_Shader.SetVec2("aPos", lights[0].LightPos);
+    m_Shader.SetVec4("aAmbiance", glm::vec4(1.f, 1.f, 1.f, 0.3f));
+    m_Shader.SetVec4("aLightColor", lights[0].LightColor);
+    m_Shader.SetFloat("aDistance", lights[0].Distance);
+
     // TODO: Only go through an active list of tile ids. to save some memory
     for (int i = 0; i < m_Tiles.size(); i++)
     {

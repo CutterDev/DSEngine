@@ -27,7 +27,8 @@ struct SpriteData {
 };
 class SpriteComponent
 {
-    int Amount;
+    int m_Amount;
+    int m_MaxAmount;
     unsigned int VAO, VBO, EBO;
     unsigned int DataBuffer;
     Texture2D m_Texture;
@@ -44,12 +45,13 @@ class SpriteComponent
     void UpdateTransforms();
     void UpdateColors();
 public:
-    void Startup(const char* path, bool alpha, std::string shader = "sprite");
+    void Startup(const char* path, bool alpha, std::string shader = "sprite", int maxAmount = 10);
     void Initialize();
     void AddNewInstance(unsigned int spriteId,
         glm::mat4 transform = glm::mat4(1.f),
         glm::vec3 color = glm::vec3(1.f));
     void UpdateTransform(unsigned int spriteId, glm::mat4 transform);
+    void RemoveInstance(unsigned int spriteId);
     void Draw(glm::mat4 projection, glm::mat4 view);
     void Destroy();
 };

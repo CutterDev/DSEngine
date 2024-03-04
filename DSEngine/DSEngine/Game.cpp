@@ -1,5 +1,8 @@
 #include "Game.h"
-
+#include "LightComponent.h"
+/// <summary>
+/// Set up Input for the Game
+/// </summary>
 void Game::SetupInput()
 {
     m_Input.AddAction("Exit", GLFW_KEY_ESCAPE);
@@ -13,6 +16,13 @@ void Game::SetupInput()
     m_Input.AddAction("RotateRight", GLFW_KEY_E);
 }
 
+
+/// <summary>
+/// Initializer the Modules of the Game 
+/// TODO: ADD SCENE MANAGER INTO THE GAME 
+/// </summary>
+/// <param name="width"></param>
+/// <param name="height"></param>
 void Game::Initialize(unsigned int width, unsigned int height)
 {
     m_Window = { (float)width, (float)height, (float)width / (float)height };
@@ -25,12 +35,12 @@ void Game::Initialize(unsigned int width, unsigned int height)
     // Add the Scenes/Entities/Sprites
 
     m_Entity = m_EntityManager.CreateEntity("sprite");
-    m_Entity.Position = glm::vec3(10.0f, 0.0f, 0.0f);
+    m_Entity.Position = glm::vec3(0.0f, 0.0f, 0.0f);
     m_Entity.Rotation = 45;
     m_Entity.Scale = glm::vec2(20.f);
 
     m_EntityManager.CreateSprite(m_Entity, "wall.jpg");
-
+    m_EntityManager.CreateLight(m_Entity.EntityId, glm::vec3(1.f), 0.8f, 200.f);
     for (int y = -100; y < 100; y++)
     {
         for (int x = -1000; x < 1000; x++)
@@ -113,7 +123,14 @@ void Game::Tick(float deltaTime)
     }
 
     m_EntityManager.Update(m_MainCamera.Projection, m_MainCamera.View);
-    m_TileManager.Draw(m_MainCamera.Projection, m_MainCamera.View);
+
+    std::vector<Light> lights = m_EntityManager.GetLights();
+
+    for (int i = 0; i < lights.size(); i++)
+    {
+        lights[i].LightPos = m_MainCamera.WorldPosToScreenSpace(glm::vec3(lights[i].LightPos, 1.f));
+    }
+    m_TileManager.Draw(m_MainCamera.Projection, m_MainCamera.View, lights);
     sprite.Draw(m_MainCamera.Projection, m_MainCamera.View);
 }
 

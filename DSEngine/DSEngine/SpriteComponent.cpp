@@ -1,5 +1,5 @@
 #include "SpriteComponent.h"
-void SpriteComponent::Startup(const char* path, bool alpha, std::string shader)
+void SpriteComponent::Startup(const char* path, bool alpha, std::string shader, int maxAmount)
 {
     // Create new Texture was not found.
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
@@ -21,6 +21,11 @@ void SpriteComponent::Startup(const char* path, bool alpha, std::string shader)
     stbi_image_free(data);
 
     m_Shader.Startup((shader + ".vs").c_str(), (shader + ".fs").c_str());
+
+    m_MaxAmount = maxAmount;
+    Transforms.Data.resize(maxAmount, glm::mat4(1.f));
+    Colors.Data.resize(maxAmount, glm::vec3(1.f));
+
 }
 
 void SpriteComponent::Initialize()
@@ -97,11 +102,12 @@ void SpriteComponent::Initialize()
 /// </summary>
 void SpriteComponent::AddNewInstance(unsigned int entityId, glm::mat4 transform, glm::vec3 color)
 {
-    InstanceIndex[entityId] = Amount;
-    Transforms.Data.push_back(transform);
-    Colors.Data.push_back(color);
+    InstanceIndex[entityId] = m_Amount;
 
-    Amount++;
+    Transforms.Data[m_Amount] = transform;
+    Colors.Data[m_Amount] = color;
+
+    m_Amount++;
 }
 
 void SpriteComponent::UpdateTransform(unsigned int entityId, glm::mat4 transform)
@@ -116,10 +122,33 @@ void SpriteComponent::UpdateTransform(unsigned int entityId, glm::mat4 transform
     }
 }
 
+void SpriteComponent::RemoveInstance(unsigned int entityId)
+{
+    std::map<unsigned int, int>::iterator it = InstanceIndex.find(entityId);
+    if (it != InstanceIndex.end())
+    {
+        int index = InstanceIndex[entityId];
+
+        Transforms.Data.erase(Transforms.Data.begin() + index);
+        Colors.Data.erase(Colors.Data.begin() + index);
+        InstanceIndex.erase(it);
+
+        Transforms.Data.push_back(glm::mat4(1.0f));
+        Colors.Data.push_back(glm::vec3(1.f));
+
+        for (std::map<unsigned int, int>::iterator it = InstanceIndex.begin(); it != InstanceIndex.end(); ++it)
+        {
+            it->second--;
+        }
+
+        m_Amount--;
+    }
+}
+
 
 void SpriteComponent::Draw(glm::mat4 projection, glm::mat4 view)
 {
-    if (Amount > 0)
+    if (m_Amount > 0)
     {
         CheckForUpdates();
 
@@ -133,7 +162,7 @@ void SpriteComponent::Draw(glm::mat4 projection, glm::mat4 view)
         m_Shader.SetMat4("view", view);
 
         glBindVertexArray(VAO);
-        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, Amount);
+        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_Amount);
         glBindVertexArray(0);
     }
 }
@@ -185,7 +214,6 @@ void SpriteComponent::UpdateTransforms()
     glBufferSubData(GL_ARRAY_BUFFER, Colors.Size(), transformSize, &Transforms.Data[0]);
     Transforms.ResetFlags();
 }
-
 
 void SpriteComponent::Destroy()
 {
