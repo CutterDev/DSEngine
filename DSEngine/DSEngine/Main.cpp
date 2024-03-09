@@ -40,7 +40,6 @@ glm::vec2 currentMousePos = glm::vec2(0.0f);
 
 float deltaTime = 0.0f;
 
-std::unique_ptr<GameCamera> MainCamera;
 // Modules
 InputManager Input;
 GLFWwindow* GameWindow = nullptr;

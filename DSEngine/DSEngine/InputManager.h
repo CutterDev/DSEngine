@@ -15,16 +15,16 @@ public:
 class InputManager
 {
 private:
-    std::map<std::string, Action> m_Actions;
+    static std::map<std::string, Action> m_Actions;
 
 public:
-    void AddAction(std::string action, int keycode);
-    void EditAction(std::string action, int keycode);
+    static void AddAction(std::string action, int keycode);
+    static void EditAction(std::string action, int keycode);
 
-    bool IsPressed(std::string action);
-    bool IsPressedDown(std::string action);
-    bool IsPressedUp(std::string action);
+    static bool IsPressed(std::string action);
+    static bool IsPressedDown(std::string action);
+    static bool IsPressedUp(std::string action);
 
-    void PollInputs(GLFWwindow* window);
+    static void PollInputs(GLFWwindow* window);
 };
 

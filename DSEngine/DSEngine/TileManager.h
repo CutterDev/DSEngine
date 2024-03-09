@@ -1,4 +1,4 @@
-#pragma 
+#pragma once
 
 #include "ResourceManager.h"
 #include "Entity.h"
@@ -87,7 +87,7 @@ private:
     std::unordered_map <glm::ivec2, TileIndex> m_TileIndex;
 public:
     void Startup(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
-    void Initialize();
+    void Populate();
     void Draw(glm::mat4 projection, glm::mat4 view, std::vector<Light> lights);
     void SetTile(int tileId, glm::ivec2 pos);
     void Destroy();

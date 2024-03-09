@@ -13,6 +13,8 @@
 #include "TileManager.h"
 #include "GameCamera.h"
 #include "EntityManager.h"
+#include "CommonHeaders.h"
+#include "MainGameScene.h"
 
 struct Window {
     float Width;
@@ -20,21 +22,14 @@ struct Window {
     float AspectRatio;
 };
 
-struct Mouse {
-    glm::vec2 Position;
-};
-
 class Game
 {
 private:
-    GameCamera m_MainCamera;
-    InputManager m_Input;
-    TileManager m_TileManager;
-    EntityManager m_EntityManager;
-    SpriteComponent sprite;
+    GameCamera* m_MainCamera;
     Window m_Window;
     Mouse m_Mouse;
-    Entity m_Entity;
+
+    Scene* mainGameScene;
     glm::vec3 spritePosition;
     glm::mat4 spriteTransform;
     bool updatePos;

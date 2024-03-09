@@ -3,7 +3,6 @@
 #include <vector>
 #include <unordered_map>
 
-
 #include "SpriteComponent.h"
 #include "LightComponent.h"
 
@@ -24,7 +23,7 @@ struct Entity {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(Position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
 
-        model = glm::rotate(model, glm::radians(Rotation), glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
+        model = glm::rotate(model, Rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
 
         model = glm::scale(model, glm::vec3(Scale, 1.0f)); // last scale
 

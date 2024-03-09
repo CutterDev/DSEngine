@@ -1,5 +1,6 @@
 #ifndef GAMECAMERA_H
 #define GAMECAMERA_H
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -37,6 +38,11 @@ public:
         m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
+    void Initialize(int windowWidth, int windowHeight)
+    {
+        m_CurrentWindowWidth = windowWidth;
+        m_CurrentWindowHeight = windowHeight;
+    }
     void TranslateView(glm::vec3 pos)
     {
         View = glm::translate(View, pos);
@@ -49,6 +55,9 @@ public:
 
     void SetProjection(float width, float height, float aspect)
     {
+        m_CurrentWindowWidth = width;
+        m_CurrentWindowHeight = height;
+
         float xs = aspect > 1.f ? aspect : 1.f;
         float sy = aspect > 1.f ? 1.0 : 1.0f / aspect;
 
@@ -61,10 +70,8 @@ public:
                 10.0f);
     }
     
-    void Update(int windowWidth, int windowHeight)
+    void Update()
     {
-        m_CurrentWindowWidth = windowWidth;
-        m_CurrentWindowHeight = windowHeight;
         View = glm::lookAt(Position, Position + m_CameraFront, m_CameraUp);
     }
 

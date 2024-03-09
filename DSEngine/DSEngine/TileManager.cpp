@@ -87,7 +87,7 @@ void TileManager::Startup(std::string texture, unsigned int tileSize, int tileSe
     }
 }
 
-void TileManager::Initialize()
+void TileManager::Populate()
 {
    
     float vertices[] = {
