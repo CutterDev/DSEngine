@@ -1,11 +1,19 @@
 #include "EntityManager.h"
 
-Entity EntityManager::CreateEntity(std::string name)
+Entity createEntity(std::string name, glm::vec2 pos, glm::vec2 scale, float rot)
+{
+    return EntityManager::Instance().CreateEntity(name, pos, scale, rot);
+}
+
+Entity EntityManager::CreateEntity(std::string name, glm::vec2 pos, glm::vec2 scale, float rot)
 {
     if (m_EntityIndex.find(name) == m_EntityIndex.end())
     {
         Entity entity = {
-            m_Amount
+            m_Amount,
+            pos,
+            scale,
+            rot
         };
 
         m_EntityIndex[name] = m_Amount;

@@ -1,19 +1,17 @@
 #include "MainGameScene.h"
 #include "InputManager.h"
 
+// Create Entities and Components for the Scene
 void MainGameScene::OnCreate(GameCamera* camera, Mouse* mouse)
 {
     m_MainCamera = camera;
     m_Mouse = mouse;
     m_TileManager.Startup("blocks.png", 16, 0);
 
-    m_Entity = m_EntityManager.CreateEntity("sprite");
-    m_Entity.Position = glm::vec3(0.0f, 0.0f, 0.0f);
-    m_Entity.Rotation = 45;
-    m_Entity.Scale = glm::vec2(20.f);
+    m_Entity = NewEntity("sprite", glm::vec2(0.f), glm::vec2(20.f), 45.f);
 
-    m_EntityManager.CreateSprite(m_Entity, "wall.jpg");
-    m_EntityManager.CreateLight(m_Entity.EntityId, glm::vec3(1.f), 0.8f, 200.f);
+    EntityManager::Instance().CreateSprite(m_Entity, "wall.jpg");
+    EntityManager::Instance().CreateLight(m_Entity.EntityId, glm::vec3(1.f), 0.8f, 200.f);
 }
 
 
@@ -30,7 +28,7 @@ void MainGameScene::OnActivate()
     }
 
     // Load The Create Scenes Entities Sprites
-    m_EntityManager.Start();
+    EntityManager::Instance().Start();
     m_TileManager.Populate();
 }
 
@@ -82,7 +80,7 @@ void MainGameScene::Update(float deltaTime)
 
     if (updatePos)
     {
-        m_EntityManager.UpdateTransform(m_Entity);
+        EntityManager::Instance().UpdateTransform(m_Entity);
     }
 
     if (InputManager::IsPressed("Delete"))
@@ -107,9 +105,9 @@ void MainGameScene::Update(float deltaTime)
 
 void MainGameScene::Draw(float deltaTime)
 {
-    m_EntityManager.Update(m_MainCamera->Projection, m_MainCamera->View);
+    EntityManager::Instance().Update(m_MainCamera->Projection, m_MainCamera->View);
 
-    std::vector<Light> lights = m_EntityManager.GetLights();
+    std::vector<Light> lights = EntityManager::Instance().GetLights();
 
     for (int i = 0; i < lights.size(); i++)
     {

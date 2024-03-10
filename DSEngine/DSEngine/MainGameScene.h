@@ -7,7 +7,6 @@
 
 class MainGameScene : public Scene
 {
-    EntityManager m_EntityManager;
     TileManager m_TileManager;
     GameCamera* m_MainCamera;
     Entity m_Entity;

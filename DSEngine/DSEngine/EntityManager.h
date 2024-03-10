@@ -42,8 +42,20 @@ private:
     std::map<std::string, SpriteComponent> m_SpriteComponents; // Many Components -> One Sprite
     std::map<unsigned int, int> m_LightIndex;
     std::vector<Light> m_LightComponents;
+
+    EntityManager() : m_Amount(0) {}
 public:
-    Entity CreateEntity(std::string name);
+    static EntityManager& Instance()
+    {
+        static EntityManager instance;
+        
+        return instance;
+    }
+    EntityManager(EntityManager const&) = delete;
+    void operator=(EntityManager const&) = delete;
+
+
+    Entity CreateEntity(std::string name, glm::vec2 pos = glm::vec2(0.f), glm::vec2 scale = glm::vec2(1.f), float rot = 0.f);
     void CreateSprite(Entity entity, std::string spriteName);
     void CreateLight(unsigned int entityid, glm::vec3 color = glm::vec3(1.f), float intensity = 1.f, float distance = 10.f);
     void Start();
@@ -54,3 +66,14 @@ public:
     void Destroy();
 };
 
+
+#ifndef ENTITY_FUNCS
+#define ENTITY_FUNCS
+Entity createEntity(std::string name, glm::vec2 pos = glm::vec2(0.f), glm::vec2 scale = glm::vec2(1.f), float rot = 0.f);
+void createSprite(Entity entity, std::string spriteName);
+void createLight(unsigned int entityid, glm::vec3 color = glm::vec3(1.f), float intensity = 1.f, float distance = 10.f);
+#define NewEntity(name, pos, scale, rot) createEntity(name, pos, scale, rot)
+#define NewEntity(name, pos, scale) createEntity(name, pos, scale)
+#define NewEntity(name, pos) createEntity(name, pos)
+#define NewEntity(name) createEntity(name)
+#endif
