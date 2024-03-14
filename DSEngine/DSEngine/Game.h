@@ -7,14 +7,19 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include <b2_math.h>
+
+#include "CommonHeaders.h"
 
 #include "InputManager.h"
-
+#include "SceneManager.h"
 #include "TileManager.h"
-#include "GameCamera.h"
 #include "EntityManager.h"
-#include "CommonHeaders.h"
+
 #include "MainGameScene.h"
+#include "GameCamera.h"
+
+
 
 struct Window {
     float Width;
@@ -29,9 +34,9 @@ private:
     Window m_Window;
     Mouse m_Mouse;
 
-    Scene* mainGameScene;
     glm::vec3 spritePosition;
     glm::mat4 spriteTransform;
+
     bool updatePos;
     void SetupInput();
 public:

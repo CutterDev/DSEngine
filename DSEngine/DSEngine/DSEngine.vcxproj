@@ -148,6 +148,7 @@
     <ClCompile Include="PlayerScriptComponent.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TileManager.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="PlayerScriptComponent.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TileManager.h" />
@@ -193,6 +195,7 @@
   <ItemGroup>
     <Image Include="blocks.png" />
     <Image Include="blocks4.png" />
+    <Image Include="milim.png" />
     <Image Include="wall.jpg">
       <DeploymentContent>true</DeploymentContent>
     </Image>

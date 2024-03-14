@@ -10,6 +10,8 @@ void SpriteComponent::Startup(const char* path, bool alpha, std::string shader, 
 
     if (data)
     {
+        m_Texture.Internal_Format = GL_RGBA;
+        m_Texture.Image_Format = GL_RGBA;
         // now generate texture
         m_Texture.Generate(width, height, data);
     }

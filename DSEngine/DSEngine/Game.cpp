@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "LightComponent.h"
+
 /// <summary>
 /// Set up Input for the Game
 /// </summary>
@@ -27,24 +28,21 @@ void Game::Initialize(unsigned int width, unsigned int height)
 {
     m_Window = { (float)width, (float)height, (float)width / (float)height };
 
-    mainGameScene = new MainGameScene();
+    SceneManager::Instance().Scenes["main"] = new MainGameScene();
     m_MainCamera = new GameCamera();
     SetupInput();
 
     m_MainCamera->Initialize(width, height);
-    m_MainCamera->SetProjection(m_Window.Width, m_Window.Height, m_Window.AspectRatio);
-    mainGameScene->OnCreate(m_MainCamera, &m_Mouse);
+    m_MainCamera->SetProjection(width , height, m_Window.AspectRatio);
 
-    mainGameScene->OnActivate();
+    SceneManager::Instance().Startup(m_MainCamera, &m_Mouse, "main");
     // Add the Scenes/Entities/Sprites
 
 }
 
 void Game::Tick(float deltaTime)
 {
-    mainGameScene->Update(deltaTime);
-
-    mainGameScene->Draw(deltaTime);
+    SceneManager::Instance().Update(deltaTime);
 }
 
 void Game::PollInputs(GLFWwindow* window)

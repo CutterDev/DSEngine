@@ -22,16 +22,16 @@ GLenum glCheckError_(const char* file, int line)
 }
 #define glCheckError() glCheckError_(__FILE__, __LINE__) 
 
-void TileManager::Startup(std::string texture, unsigned int tileSize, int tileSetSpacing) 
+void TileManager::Startup(std::string texture, unsigned int tileSize, int tileSetSpacing, int resolution)
 {
     m_Shader.Startup("tile.vs", "tile.fs");
     m_TileSize = tileSize;
     m_TileSpacing = tileSetSpacing;
     m_AtlasTileSize = tileSize + tileSetSpacing;
-
+    m_Resolution = resolution;
     m_Shader.Use();
     m_Shader.SetInt("ourTexture", 0);
-    m_Shader.SetFloat("tileSize", m_TileSize);
+    m_Shader.SetFloat("tileSize", m_TileSize * resolution);
     // Create new Texture was not found.
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // load image
@@ -89,7 +89,6 @@ void TileManager::Startup(std::string texture, unsigned int tileSize, int tileSe
 
 void TileManager::Populate()
 {
-   
     float vertices[] = {
         // positions          // colors        
      1.0f,  0.0f, 0.f,   1.0f, 1.0f, 1.0f,   // top right
@@ -170,7 +169,7 @@ void TileManager::Draw(glm::mat4 projection, glm::mat4 view, std::vector<Light> 
     }
 }
 
-void TileManager::SetTile(int tileId, glm::ivec2 pos)
+void TileManager::SetTile(int tileId, glm::ivec2 pos, b2World* world)
 {
     bool instanceExists = m_TileIndex.find(pos) != m_TileIndex.end();
 
@@ -204,6 +203,7 @@ void TileManager::SetTile(int tileId, glm::ivec2 pos)
 
     if (!tileIdMatches && tileId != -1)
     {
+        bool reallocateMemory = false;
         if (m_Tiles[tileId].Offsets.size() > m_Tiles[tileId].Amount)
         {
             std::vector<glm::ivec2>::iterator position = m_Tiles[tileId].Offsets.begin() + (m_Tiles[tileId].Amount);
@@ -212,6 +212,7 @@ void TileManager::SetTile(int tileId, glm::ivec2 pos)
         else
         {
             m_Tiles[tileId].Offsets.push_back(pos);
+            reallocateMemory = true;
         }
             
 
@@ -220,16 +221,40 @@ void TileManager::SetTile(int tileId, glm::ivec2 pos)
 
         if (m_IsAlive)
         {
-            m_Tiles[tileId].Update();
+            if (reallocateMemory)
+            {
+                m_Tiles[tileId].AllocatePositionsMemory();
+            }
+            else {
+                m_Tiles[tileId].Update();
+            }
+
         }
 
+        if (m_TileIndex[pos].TileId == -1)
+        {
+            // delete collider
+        }
+        else {
+            // Create collider
+            
+            b2BodyDef groundBodyDef;
+            groundBodyDef.position.Set(pos.x * (m_TileSize * m_Resolution), pos.y * (m_TileSize * m_Resolution));
+
+            m_Colliders[pos] = world->CreateBody(&groundBodyDef);
+
+            ////float boxSize = (m_TileSize * m_Resolution) * 0.02f;
+            ////b2PolygonShape groundBox;
+            ////groundBox.SetAsBox(boxSize, boxSize);
+
+            //m_Colliders[pos]->CreateFixture(&groundBox, 0.0f);
+        }
     }
-    
 }
 
 glm::ivec2 TileManager::GetTileFromWorldPos(glm::vec2 worldPos)
 {
-    glm::ivec2 tilePos = glm::ivec2((int)(worldPos.x / m_TileSize), (int)(worldPos.y / m_TileSize));
+    glm::ivec2 tilePos = glm::ivec2((int)(worldPos.x / (m_TileSize * m_Resolution)), (int)(worldPos.y / (m_TileSize * m_Resolution)));
 
 
     if (worldPos.x < 0)

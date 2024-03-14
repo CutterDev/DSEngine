@@ -11,6 +11,7 @@ class MainGameScene : public Scene
     GameCamera* m_MainCamera;
     Entity m_Entity;
     Mouse* m_Mouse;
+    float timeStep = 1.0f / 60.0f;
     // Inherited via Scene
     void OnCreate(GameCamera* camera, Mouse* mouse) override;
     void OnDestroy() override;

@@ -114,6 +114,9 @@
     <ClCompile Include="PlayerScriptComponent.cpp">
       <Filter>Source Files\Components\Scripts</Filter>
     </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Source Files\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -173,6 +176,9 @@
     <ClInclude Include="PlayerScriptComponent.h">
       <Filter>Header Files\Components\Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Header Files\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="litshader.vs">
@@ -208,6 +214,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="blocks4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="milim.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

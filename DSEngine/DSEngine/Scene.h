@@ -1,10 +1,15 @@
 #pragma once
+#include <b2_world.h>
+
+#include <memory>
+
 #include "GameCamera.h"
 #include "CommonHeaders.h"
 
 class Scene
 {
 public:
+    b2World* Physics;
     // Called when scene initially created. Called once.
     virtual void OnCreate(GameCamera* camera, Mouse* mouse) = 0;
 

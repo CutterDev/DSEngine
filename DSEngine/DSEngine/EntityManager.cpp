@@ -51,6 +51,14 @@ void EntityManager::CreateLight(unsigned int entityid, glm::vec3 color, float in
     }
 }
 
+void EntityManager::CreateBody(b2World* world, Entity entity)
+{
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set((entity.Position.x * entity.Scale.x) * 0.02f, (entity.Position.y * entity.Scale.y) * 0.02f);
+    m_Bodies[entity.EntityId] = world->CreateBody(&bodyDef);
+}
+
 void EntityManager::Start()
 {
     for (std::map<std::string, SpriteComponent>::iterator it = m_SpriteComponents.begin(); it != m_SpriteComponents.end(); ++it)

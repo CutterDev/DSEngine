@@ -4,12 +4,17 @@
 #include "Entity.h"
 #include "SpriteComponent.h"
 #include "Shader.h"
+#include "LightComponent.h"
 #include <glm/glm.hpp>
 #include "glm/gtx/hash.hpp"
 #include <map>
 #include <memory>
 #include <string>
-#include "LightComponent.h"
+
+
+#include <b2_world.h>
+#include <b2_polygon_shape.h>
+#include <b2_body.h>
 
 struct TileAtlas{
     unsigned int VAO;
@@ -25,7 +30,21 @@ struct TileAtlas{
         glGenBuffers(1, &PositionsBuffer);
 
         // Todo Allocation of tiles needs to be correctly addressed.
-        Offsets.resize(1000, glm::ivec2(0, 0));
+        Offsets.resize(100, glm::ivec2(0, 0));
+    }
+
+    void AllocatePositionsMemory()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, PositionsBuffer);
+
+        // Positions Attribute
+        glEnableVertexAttribArray(3);
+        glVertexAttribIPointer(3, 2, GL_INT, 2 * sizeof(GLint), (void*)0);
+        glVertexAttribDivisor(3, 1);
+
+        glBufferData(GL_ARRAY_BUFFER, Offsets.size() * sizeof(glm::ivec2), &Offsets[0], GL_STATIC_DRAW);
+
+        glBindVertexArray(0);
     }
 
     void Update() {
@@ -80,16 +99,20 @@ private:
 
     bool m_IsAlive;
 
+    int m_Resolution;
+
     std::vector<int> m_TileAtlasIds;
     std::map<int, TileAtlas> m_Tiles;
+
     std::vector<int> m_ActiveTiles;
     // Tile Positions on the Map Tile Id
     std::unordered_map <glm::ivec2, TileIndex> m_TileIndex;
+    std::unordered_map <glm::ivec2, b2Body*> m_Colliders;
 public:
-    void Startup(std::string texture, unsigned int tileSize, int tileSetSpacing = 0);
+    void Startup(std::string texture, unsigned int tileSize, int tileSetSpacing = 0, int resolution = 1);
     void Populate();
     void Draw(glm::mat4 projection, glm::mat4 view, std::vector<Light> lights);
-    void SetTile(int tileId, glm::ivec2 pos);
+    void SetTile(int tileId, glm::ivec2 pos, b2World* world);
     void Destroy();
 
     glm::ivec2 GetTileFromWorldPos(glm::vec2 worldPos);
